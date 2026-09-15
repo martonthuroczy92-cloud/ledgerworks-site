@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ledgerworks — AI agents for crypto & fintech operations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F6F1;
+    --bg-alt: #ECEEE5;
+    --ink: #181C1A;
+    --ink-soft: #5B655F;
+    --accent: #9B3A25;
+    --accent-ink: #FBF3EF;
+    --rule: #D3D6C9;
+    --font-sans: 'IBM Plex Sans', -apple-system, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15181A;
+      --bg-alt: #1C2022;
+      --ink: #ECEEE8;
+      --ink-soft: #9AA39C;
+      --accent: #E28A6F;
+      --accent-ink: #201210;
+      --rule: #2C312E;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15181A;
+    --bg-alt: #1C2022;
+    --ink: #ECEEE8;
+    --ink-soft: #9AA39C;
+    --accent: #E28A6F;
+    --accent-ink: #201210;
+    --rule: #2C312E;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .rule { border: none; border-top: 1px solid var(--rule); margin: 0; }
+
+  /* header */
+  header {
+    padding: 22px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  header .wrap { display: flex; align-items: center; justify-content: space-between; }
+  .wordmark {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+  }
+  nav { display: flex; gap: 24px; }
+  nav a {
+    text-decoration: none;
+    font-size: 14px;
+    color: var(--ink-soft);
+    transition: color 0.15s ease;
+  }
+  nav a:hover, nav a:focus-visible { color: var(--ink); }
+
+  /* hero */
+  .hero {
+    padding: 64px 0 56px;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+  .hero h1 {
+    font-size: clamp(32px, 4.2vw, 46px);
+    line-height: 1.14;
+    font-weight: 600;
+    margin: 0 0 20px;
+    max-width: 15ch;
+  }
+  .hero p.lede {
+    font-size: 17px;
+    color: var(--ink-soft);
+    max-width: 46ch;
+    margin: 0 0 28px;
+  }
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block;
+    padding: 11px 20px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 3px;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover { opacity: 0.9; }
+  .btn-ghost { border-color: var(--rule); color: var(--ink); }
+  .btn-ghost:hover { border-color: var(--ink-soft); }
+
+  /* ledger card in hero */
+  .ledger {
+    border: 1px solid var(--rule);
+    background: var(--bg-alt);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .ledger-head {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .ledger-row {
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .ledger-row:last-child { border-bottom: none; }
+  .ledger-row-top { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+  .ledger-name { font-size: 14px; font-weight: 500; }
+  .ledger-status {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .ledger-status.live { color: var(--accent); }
+  .ledger-desc { font-size: 13px; color: var(--ink-soft); margin-top: 4px; }
+
+  /* sections */
+  section { padding: 56px 0; }
+  section.alt { background: var(--bg-alt); }
+  h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0 0 8px;
+  }
+  .section-intro {
+    color: var(--ink-soft);
+    font-size: 15px;
+    max-width: 56ch;
+    margin: 0 0 36px;
+  }
+
+  /* services as ledger lines */
+  .service-row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 20px;
+    padding: 22px 0;
+    border-top: 1px solid var(--rule);
+  }
+  .service-row:last-child { border-bottom: 1px solid var(--rule); }
+  .service-code {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+    padding-top: 3px;
+  }
+  .service-row h3 { font-size: 16px; font-weight: 600; margin: 0 0 6px; }
+  .service-row p { font-size: 14px; color: var(--ink-soft); margin: 0; max-width: 60ch; }
+
+  /* process */
+  .process {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+  }
+  .step-num {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .process h3 { font-size: 15px; font-weight: 600; margin: 0 0 6px; }
+  .process p { font-size: 13px; color: var(--ink-soft); margin: 0; }
+
+  /* pricing */
+  .price-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 20px;
+    align-items: center;
+    padding: 24px 0;
+    border-top: 1px solid var(--rule);
+  }
+  .price-row:last-of-type { border-bottom: 1px solid var(--rule); }
+  .price-name { font-size: 16px; font-weight: 600; margin: 0 0 6px; }
+  .price-desc { font-size: 13px; color: var(--ink-soft); max-width: 46ch; margin: 0; }
+  .price-amount {
+    font-family: var(--font-mono);
+    font-size: 20px;
+    font-weight: 600;
+    text-align: right;
+    white-space: nowrap;
+  }
+  .price-cadence { display: block; font-family: var(--font-mono); font-size: 11px; color: var(--ink-soft); font-weight: 400; }
+  .pricing-note { font-size: 13px; color: var(--ink-soft); margin-top: 20px; }
+  .price-actions { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+  .btn-usdc { font-family: var(--font-mono); font-size: 12px; padding: 9px 16px; text-align: center; }
+
+  /* demo form */
+  .form-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+  form { display: grid; gap: 16px; }
+  label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+  input, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 14px;
+  }
+  input:focus, textarea:focus, .btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  textarea { resize: vertical; min-height: 90px; }
+  .form-note { font-size: 13px; color: var(--ink-soft); }
+  #form-status { font-size: 13px; margin-top: 4px; min-height: 18px; }
+  #form-status.ok { color: var(--accent); }
+
+  /* footer */
+  footer {
+    padding: 40px 0 56px;
+    border-top: 1px solid var(--rule);
+  }
+  footer p { font-size: 12.5px; color: var(--ink-soft); max-width: 66ch; margin: 0 0 10px; }
+  footer a.mail { font-family: var(--font-mono); font-size: 13px; }
+
+  @media (max-width: 760px) {
+    .hero { grid-template-columns: 1fr; padding-top: 44px; }
+    .process { grid-template-columns: 1fr 1fr; }
+    .form-wrap { grid-template-columns: 1fr; gap: 28px; }
+    .price-row { grid-template-columns: 1fr; text-align: left; }
+    .price-amount { text-align: left; }
+    .price-actions { flex-direction: row; }
+    .price-actions .btn { flex: 1; }
+    nav { gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="wordmark">LEDGERWORKS</div>
+    <nav>
+      <a href="#work">Work</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#start">Start a build</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap hero">
+  <div>
+    <h1>AI agents for the parts of crypto and fintech operations nobody wants to demo.</h1>
+    <p class="lede">Support agents, ops automation, and compliance triage — built non-custodially, disclosed honestly, and maintained by one person who ships. No platform, no lock-in: you own what gets built.</p>
+    <div class="cta-row">
+      <a href="#start" class="btn btn-primary">Request a build slot</a>
+      <a href="#pricing" class="btn btn-ghost">See pricing</a>
+    </div>
+  </div>
+  <div class="ledger">
+    <div class="ledger-head">RECENT ENTRIES</div>
+    <div class="ledger-row">
+      <div class="ledger-row-top">
+        <span class="ledger-name">Ferry Till</span>
+        <span class="ledger-status live">LIVE</span>
+      </div>
+      <p class="ledger-desc">Non-custodial Solana payment links + disclosure-first AI support widget for merchants.</p>
+    </div>
+    <div class="ledger-row">
+      <div class="ledger-row-top">
+        <span class="ledger-name">MiCA triage agent</span>
+        <span class="ledger-status">IN BUILD</span>
+      </div>
+      <p class="ledger-desc">Routes small crypto firms to the right authorisation tier and tracks their deadline.</p>
+    </div>
+    <div class="ledger-row">
+      <div class="ledger-row-top">
+        <span class="ledger-name">Open build slot</span>
+        <span class="ledger-status">AVAILABLE</span>
+      </div>
+      <p class="ledger-desc">One slot open for a new engagement this month.</p>
+    </div>
+  </div>
+</div>
+
+<section id="work">
+  <div class="wrap">
+    <h2>What gets built</h2>
+    <p class="section-intro">Four kinds of agents, all scoped to your stack — Copilot Studio, Claude, or custom, depending on what you already run.</p>
+
+    <div class="service-row">
+      <div class="service-code">SUPPORT</div>
+      <div>
+        <h3>Onboarding & support agents</h3>
+        <p>Chat agents for merchants, freelancers, and exchange users — answers questions honestly, escalates what it shouldn't handle, never overstates what the product does.</p>
+      </div>
+    </div>
+    <div class="service-row">
+      <div class="service-code">OPS</div>
+      <div>
+        <h3>Ops & reporting automation</h3>
+        <p>Reconciliation checks, alert triage, dashboards that build themselves — Power Automate, SQL, and Power BI underneath, an agent on top deciding what needs a human.</p>
+      </div>
+    </div>
+    <div class="service-row">
+      <div class="service-code">COMPLY</div>
+      <div>
+        <h3>Compliance triage agents</h3>
+        <p>Walks a small crypto firm through what MiCA or KYC/AML actually requires of them, tracks deadlines, generates the paper trail. Advisory triage, not legal advice.</p>
+      </div>
+    </div>
+    <div class="service-row">
+      <div class="service-code">AGENT</div>
+      <div>
+        <h3>Custom multi-agent builds</h3>
+        <p>Backtesting sandboxes, cross-model market analysis, anything where more than one agent needs to reason and disagree before a human decides.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <h2>How an engagement runs</h2>
+    <p class="section-intro">Four steps, same order every time.</p>
+    <div class="process">
+      <div>
+        <div class="step-num">1</div>
+        <h3>Scope call</h3>
+        <p>30 minutes on what the agent needs to do and what it explicitly shouldn't.</p>
+      </div>
+      <div>
+        <div class="step-num">2</div>
+        <h3>Build</h3>
+        <p>Working version in days, not months — you see it running early, not at the end.</p>
+      </div>
+      <div>
+        <div class="step-num">3</div>
+        <h3>Ship</h3>
+        <p>Deployed into your existing stack. You own the code and the agent.</p>
+      </div>
+      <div>
+        <div class="step-num">4</div>
+        <h3>Iterate</h3>
+        <p>Retainer clients get ongoing changes as the business needs shift.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="wrap">
+    <h2>Pricing</h2>
+    <p class="section-intro">One-off builds or an ongoing retainer. Prices are a starting point for a first scope call, not a fixed menu.</p>
+
+    <div class="price-row">
+      <div>
+        <p class="price-name">Single build</p>
+        <p class="price-desc">One agent, one clear job — support widget, reporting bot, or a first compliance triage flow. Fixed price, agreed after the scope call.</p>
+      </div>
+      <div class="price-amount">from €1,800<span class="price-cadence">one-time</span></div>
+      <div class="price-actions">
+        <a class="btn btn-primary" href="mailto:hello@ledgerworks.example?subject=Start%3A%20Single%20build&body=Hi%2C%20I%27d%20like%20to%20start%20a%20Single%20Build%20engagement.%0A%0AWhat%20I%20need%20built%3A%0A">Start</a>
+        <a class="btn btn-ghost btn-usdc" href="solana:REPLACE_WITH_YOUR_SOLANA_ADDRESS?label=Ledgerworks&message=Single%20build">Pay with USDC</a>
+      </div>
+    </div>
+    <div class="price-row">
+      <div>
+        <p class="price-name">Build retainer</p>
+        <p class="price-desc">A standing monthly slot for small builds and iteration — new agents, fixes, and changes as your operation grows.</p>
+      </div>
+      <div class="price-amount">€450<span class="price-cadence">per month</span></div>
+      <div class="price-actions">
+        <a class="btn btn-primary" href="mailto:hello@ledgerworks.example?subject=Start%3A%20Build%20retainer&body=Hi%2C%20I%27d%20like%20to%20start%20a%20Build%20Retainer.%0A%0AWhat%20I%20need%20built%3A%0A">Start</a>
+        <a class="btn btn-ghost btn-usdc" href="solana:REPLACE_WITH_YOUR_SOLANA_ADDRESS?label=Ledgerworks&message=Build%20retainer">Pay with USDC</a>
+      </div>
+    </div>
+    <div class="price-row">
+      <div>
+        <p class="price-name">Fractional AI partner</p>
+        <p class="price-desc">Dedicated ongoing capacity — multiple agents, deeper ops integration, priority turnaround.</p>
+      </div>
+      <div class="price-amount">€1,200<span class="price-cadence">per month</span></div>
+      <div class="price-actions">
+        <a class="btn btn-primary" href="mailto:hello@ledgerworks.example?subject=Start%3A%20Fractional%20AI%20partner&body=Hi%2C%20I%27d%20like%20to%20start%20a%20Fractional%20AI%20Partner%20engagement.%0A%0AWhat%20I%20need%20built%3A%0A">Start</a>
+        <a class="btn btn-ghost btn-usdc" href="solana:REPLACE_WITH_YOUR_SOLANA_ADDRESS?label=Ledgerworks&message=Fractional%20AI%20partner">Pay with USDC</a>
+      </div>
+    </div>
+    <p class="pricing-note">"Start" currently opens an email — swap the mailto links for Stripe Payment Links once billing is set up. "Pay with USDC" opens a Solana Pay request — replace the placeholder wallet address before this goes live, and confirm the exact amount by email first since USDC is USD-pegged, not EUR-pegged.</p>
+  </div>
+</section>
+
+<section class="alt" id="start">
+  <div class="wrap form-wrap">
+    <div>
+      <h2>Request a build slot</h2>
+      <p class="section-intro" style="margin-bottom: 16px;">Tell me what you're trying to automate. I'll reply within two business days with whether it's a fit and a rough scope.</p>
+      <p class="form-note">This opens your email client with the details filled in — nothing is stored on this page.</p>
+    </div>
+    <form id="demo-form">
+      <div>
+        <label for="f-name">Name</label>
+        <input id="f-name" name="name" type="text" required>
+      </div>
+      <div>
+        <label for="f-email">Email</label>
+        <input id="f-email" name="email" type="email" required>
+      </div>
+      <div>
+        <label for="f-company">Company (optional)</label>
+        <input id="f-company" name="company" type="text">
+      </div>
+      <div>
+        <label for="f-need">What do you need built?</label>
+        <textarea id="f-need" name="need" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Send request</button>
+      <div id="form-status" role="status"></div>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <hr class="rule" style="margin-bottom: 24px;">
+    <p>Ledgerworks provides software development and automation services. It does not provide investment, legal, custody, or payment services. Fiat billing runs through a licensed third-party processor; USDC payments are accepted directly to a self-custodied wallet as payment for services rendered, the same way a card payment or bank transfer would be.</p>
+    <a class="mail" href="mailto:hello@ledgerworks.example">hello@ledgerworks.example</a>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('demo-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = document.getElementById('f-name').value.trim();
+    var email = document.getElementById('f-email').value.trim();
+    var company = document.getElementById('f-company').value.trim();
+    var need = document.getElementById('f-need').value.trim();
+
+    var subject = 'Build request from ' + name;
+    var body = 'Name: ' + name + '\n' +
+               'Email: ' + email + '\n' +
+               'Company: ' + (company || '—') + '\n\n' +
+               'What they need built:\n' + need;
+
+    var href = 'mailto:hello@ledgerworks.example' +
+               '?subject=' + encodeURIComponent(subject) +
+               '&body=' + encodeURIComponent(body);
+
+    window.location.href = href;
+
+    var status = document.getElementById('form-status');
+    status.textContent = 'Opening your email client to send this.';
+    status.classList.add('ok');
+  });
+</script>
+
+</body>
+</html>
