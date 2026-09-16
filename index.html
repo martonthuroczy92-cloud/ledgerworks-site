@@ -111,11 +111,13 @@
     border-radius: 3px;
     cursor: pointer;
     border: 1px solid transparent;
+    background: none;
   }
   .btn-primary { background: var(--accent); color: var(--accent-ink); }
   .btn-primary:hover { opacity: 0.9; }
   .btn-ghost { border-color: var(--rule); color: var(--ink); }
   .btn-ghost:hover { border-color: var(--ink-soft); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
   /* ledger card in hero */
   .ledger {
@@ -205,6 +207,17 @@
     border-top: 1px solid var(--rule);
   }
   .price-row:last-of-type { border-bottom: 1px solid var(--rule); }
+  .price-row.featured { background: var(--bg-alt); margin: 0 -24px; padding: 24px; border-top: 1px solid var(--rule); border-radius: 4px; }
+  .price-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    padding: 1px 6px;
+    margin-bottom: 8px;
+  }
   .price-name { font-size: 16px; font-weight: 600; margin: 0 0 6px; }
   .price-desc { font-size: 13px; color: var(--ink-soft); max-width: 46ch; margin: 0; }
   .price-amount {
@@ -229,7 +242,7 @@
     color: var(--ink-soft);
     margin-bottom: 6px;
   }
-  input, textarea {
+  input, textarea, select {
     width: 100%;
     padding: 10px 12px;
     background: var(--bg);
@@ -239,7 +252,7 @@
     font-family: var(--font-sans);
     font-size: 14px;
   }
-  input:focus, textarea:focus, .btn:focus-visible {
+  input:focus, textarea:focus, select:focus, .btn:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 1px;
   }
@@ -247,6 +260,57 @@
   .form-note { font-size: 13px; color: var(--ink-soft); }
   #form-status { font-size: 13px; margin-top: 4px; min-height: 18px; }
   #form-status.ok { color: var(--accent); }
+
+  /* brief wizard */
+  .brief-shell {
+    border: 1px solid var(--rule);
+    background: var(--bg-alt);
+    border-radius: 4px;
+    padding: 28px;
+  }
+  .brief-progress {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+  }
+  .brief-question { font-size: 15px; font-weight: 600; margin: 0 0 4px; }
+  .brief-hint { font-size: 13px; color: var(--ink-soft); margin: 0 0 14px; }
+  .choice-group { display: grid; gap: 8px; margin-bottom: 8px; }
+  .choice-option {
+    display: block;
+    padding: 12px 14px;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    font-size: 14px;
+    cursor: pointer;
+    background: var(--bg);
+  }
+  .choice-option:hover { border-color: var(--ink-soft); }
+  .choice-option.selected { border-color: var(--accent); background: var(--bg); box-shadow: inset 0 0 0 1px var(--accent); }
+  .choice-option input { position: absolute; opacity: 0; pointer-events: none; }
+  .brief-nav { display: flex; justify-content: space-between; gap: 12px; margin-top: 20px; }
+  .brief-output {
+    white-space: pre-wrap;
+    font-size: 13.5px;
+    line-height: 1.6;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 20px;
+    max-height: 480px;
+    overflow-y: auto;
+    font-family: var(--font-mono);
+  }
+  .brief-loading { font-family: var(--font-mono); font-size: 13px; color: var(--ink-soft); }
+  .brief-error { font-size: 13px; color: var(--accent); }
+  .disclosure {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    border-left: 2px solid var(--accent);
+    padding-left: 12px;
+    margin: 18px 0 0;
+  }
 
   /* footer */
   footer {
@@ -261,6 +325,7 @@
     .process { grid-template-columns: 1fr 1fr; }
     .form-wrap { grid-template-columns: 1fr; gap: 28px; }
     .price-row { grid-template-columns: 1fr; text-align: left; }
+    .price-row.featured { margin: 0; }
     .price-amount { text-align: left; }
     .price-actions { flex-direction: row; }
     .price-actions .btn { flex: 1; }
@@ -276,6 +341,7 @@
     <nav>
       <a href="#work">Work</a>
       <a href="#pricing">Pricing</a>
+      <a href="#brief">Get a brief</a>
       <a href="#start">Start a build</a>
     </nav>
   </div>
@@ -286,8 +352,8 @@
     <h1>AI agents for the parts of crypto and fintech operations nobody wants to demo.</h1>
     <p class="lede">Support agents, ops automation, and compliance triage — built non-custodially, disclosed honestly, and maintained by one person who ships. No platform, no lock-in: you own what gets built.</p>
     <div class="cta-row">
-      <a href="#start" class="btn btn-primary">Request a build slot</a>
-      <a href="#pricing" class="btn btn-ghost">See pricing</a>
+      <a href="#brief" class="btn btn-primary">Get an automated brief — €190</a>
+      <a href="#start" class="btn btn-ghost">Request a full build</a>
     </div>
   </div>
   <div class="ledger">
@@ -355,12 +421,12 @@
 <section class="alt">
   <div class="wrap">
     <h2>How an engagement runs</h2>
-    <p class="section-intro">Four steps, same order every time.</p>
+    <p class="section-intro">Four steps, same order every time — or start with an automated brief if you're not ready for a scope call.</p>
     <div class="process">
       <div>
         <div class="step-num">1</div>
-        <h3>Scope call</h3>
-        <p>30 minutes on what the agent needs to do and what it explicitly shouldn't.</p>
+        <h3>Scope (or brief)</h3>
+        <p>30 minutes on a call, or 5 minutes with the automated brief agent below.</p>
       </div>
       <div>
         <div class="step-num">2</div>
@@ -386,14 +452,25 @@
     <h2>Pricing</h2>
     <p class="section-intro">One-off builds or an ongoing retainer. Prices are a starting point for a first scope call, not a fixed menu.</p>
 
+    <div class="price-row featured">
+      <div>
+        <span class="price-tag">SELF-SERVE</span>
+        <p class="price-name">Automated build brief</p>
+        <p class="price-desc">Answer a few questions, get an architecture recommendation, licensing/rail flags, and a prompt pack you can hand to an AI coding tool. No call, generated in minutes.</p>
+      </div>
+      <div class="price-amount">€190<span class="price-cadence">one-time</span></div>
+      <div class="price-actions">
+        <a class="btn btn-primary" href="#brief">Start the brief</a>
+      </div>
+    </div>
     <div class="price-row">
       <div>
         <p class="price-name">Single build</p>
-        <p class="price-desc">One agent, one clear job — support widget, reporting bot, or a first compliance triage flow. Fixed price, agreed after the scope call.</p>
+        <p class="price-desc">One agent, one clear job — support widget, reporting bot, or a first compliance triage flow. Fixed price, agreed after the scope call. €190 credited if you've already bought a brief within 30 days.</p>
       </div>
       <div class="price-amount">from €1,800<span class="price-cadence">one-time</span></div>
       <div class="price-actions">
-        <a class="btn btn-primary" href="mailto:marton.thuroczy92@gmail.com?subject=Start%3A%20Single%20build&body=Hi%2C%20I%27d%20like%20to%20start%20a%20Single%20Build%20engagement.%0A%0AWhat%20I%20need%20built%3A%0A">Start</a>
+        <a class="btn btn-primary" href="mailto:hello@ledgerworks.example?subject=Start%3A%20Single%20build&body=Hi%2C%20I%27d%20like%20to%20start%20a%20Single%20Build%20engagement.%0A%0AWhat%20I%20need%20built%3A%0A">Start</a>
         <a class="btn btn-ghost btn-usdc" href="solana:REPLACE_WITH_YOUR_SOLANA_ADDRESS?label=Ledgerworks&message=Single%20build">Pay with USDC</a>
       </div>
     </div>
@@ -404,7 +481,7 @@
       </div>
       <div class="price-amount">€450<span class="price-cadence">per month</span></div>
       <div class="price-actions">
-        <a class="btn btn-primary" href="mailto:marton.thuroczy92@gmail.com?subject=Start%3A%20Build%20retainer&body=Hi%2C%20I%27d%20like%20to%20start%20a%20Build%20Retainer.%0A%0AWhat%20I%20need%20built%3A%0A">Start</a>
+        <a class="btn btn-primary" href="mailto:hello@ledgerworks.example?subject=Start%3A%20Build%20retainer&body=Hi%2C%20I%27d%20like%20to%20start%20a%20Build%20Retainer.%0A%0AWhat%20I%20need%20built%3A%0A">Start</a>
         <a class="btn btn-ghost btn-usdc" href="solana:REPLACE_WITH_YOUR_SOLANA_ADDRESS?label=Ledgerworks&message=Build%20retainer">Pay with USDC</a>
       </div>
     </div>
@@ -415,11 +492,45 @@
       </div>
       <div class="price-amount">€1,200<span class="price-cadence">per month</span></div>
       <div class="price-actions">
-        <a class="btn btn-primary" href="mailto:marton.thuroczy92@gmail.com?subject=Start%3A%20Fractional%20AI%20partner&body=Hi%2C%20I%27d%20like%20to%20start%20a%20Fractional%20AI%20Partner%20engagement.%0A%0AWhat%20I%20need%20built%3A%0A">Start</a>
+        <a class="btn btn-primary" href="mailto:hello@ledgerworks.example?subject=Start%3A%20Fractional%20AI%20partner&body=Hi%2C%20I%27d%20like%20to%20start%20a%20Fractional%20AI%20Partner%20engagement.%0A%0AWhat%20I%20need%20built%3A%0A">Start</a>
         <a class="btn btn-ghost btn-usdc" href="solana:REPLACE_WITH_YOUR_SOLANA_ADDRESS?label=Ledgerworks&message=Fractional%20AI%20partner">Pay with USDC</a>
       </div>
     </div>
     <p class="pricing-note">"Start" currently opens an email — swap the mailto links for Stripe Payment Links once billing is set up. "Pay with USDC" opens a Solana Pay request — replace the placeholder wallet address before this goes live, and confirm the exact amount by email first since USDC is USD-pegged, not EUR-pegged.</p>
+  </div>
+</section>
+
+<section class="alt" id="brief">
+  <div class="wrap">
+    <h2>Automated build brief</h2>
+    <p class="section-intro">Seven questions, then a €190 checkout, then the brief. The agent drafts an architecture recommendation, flags anything that touches licensing or custody, and hands you a prompt pack — the same starting point I'd give a client after a scope call, generated on the spot.</p>
+
+    <div class="brief-shell">
+      <div id="brief-cancelled-note" class="brief-error" style="display:none; margin-bottom: 16px;">Checkout was cancelled — your answers are still here, pick up whenever you're ready.</div>
+
+      <div id="brief-wizard">
+        <div class="brief-progress" id="brief-progress">Question 1 of 7</div>
+        <div id="brief-question-host"></div>
+        <div class="brief-nav">
+          <button class="btn btn-ghost" id="brief-back" type="button">Back</button>
+          <button class="btn btn-primary" id="brief-next" type="button">Next</button>
+        </div>
+      </div>
+
+      <div id="brief-checkout-loading" class="brief-loading" style="display:none;">Opening secure checkout…</div>
+      <div id="brief-loading" class="brief-loading" style="display:none;">Payment confirmed — drafting the brief, usually 15–30 seconds…</div>
+      <div id="brief-error" class="brief-error" style="display:none;"></div>
+
+      <div id="brief-result" style="display:none;">
+        <div class="brief-output" id="brief-output"></div>
+        <div class="brief-nav">
+          <button class="btn btn-ghost" id="brief-download" type="button">Download brief (.md)</button>
+          <a class="btn btn-primary" href="#start">Book a full build</a>
+        </div>
+        <p class="disclosure">This brief is generated by an AI agent for planning purposes. Anything it says about licensing, custody, or regulatory status is a starting flag, not legal advice — verify with counsel before you build on it.</p>
+      </div>
+      <p class="form-note" style="margin-top: 16px;">Prefer to pay in USDC instead of card? Email <a href="mailto:hello@ledgerworks.example?subject=USDC%20payment%20-%20Automated%20build%20brief">hello@ledgerworks.example</a> with your transaction signature and I'll send the brief manually.</p>
+    </div>
   </div>
 </section>
 
@@ -456,8 +567,8 @@
 <footer>
   <div class="wrap">
     <hr class="rule" style="margin-bottom: 24px;">
-    <p>Ledgerworks provides software development and automation services. It does not provide investment, legal, custody, or payment services. Fiat billing runs through a licensed third-party processor; USDC payments are accepted directly to a self-custodied wallet as payment for services rendered, the same way a card payment or bank transfer would be.</p>
-    <a class="mail" href="mailto:marton.thuroczy92@gmail.com">marton.thuroczy92@gmail.com</a>
+    <p>Ledgerworks provides software development and automation services. It does not provide investment, legal, custody, or payment services. Fiat billing runs through a licensed third-party processor; USDC payments are accepted directly to a self-custodied wallet as payment for services rendered, the same way a card payment or bank transfer would be. The automated build brief is generated by an AI agent and is advisory only — it is not legal, tax, or regulatory advice.</p>
+    <a class="mail" href="mailto:hello@ledgerworks.example">hello@ledgerworks.example</a>
   </div>
 </footer>
 
@@ -475,7 +586,7 @@
                'Company: ' + (company || '—') + '\n\n' +
                'What they need built:\n' + need;
 
-    var href = 'mailto:marton.thuroczy92@gmail.com' +
+    var href = 'mailto:hello@ledgerworks.example' +
                '?subject=' + encodeURIComponent(subject) +
                '&body=' + encodeURIComponent(body);
 
@@ -485,6 +596,261 @@
     status.textContent = 'Opening your email client to send this.';
     status.classList.add('ok');
   });
+</script>
+
+<script>
+(function () {
+  // ---- Automated build brief wizard ----
+  var questions = [
+    {
+      id: 'idea',
+      type: 'text',
+      label: 'What are you trying to build?',
+      hint: 'One or two sentences — the thing itself, not the tech stack.',
+      placeholder: 'e.g. a support agent for a crypto exchange\'s onboarding flow'
+    },
+    {
+      id: 'custody',
+      type: 'choice',
+      label: 'Will it ever hold or move customer funds?',
+      hint: 'This is the single biggest factor in what you\'ll need to comply with.',
+      options: [
+        'No — it only gives information or automates internal ops',
+        'Yes, non-custodially — funds move wallet-to-wallet, we never hold them',
+        'Yes, custodially — we\'d hold or control customer funds at some point',
+        'Not sure yet'
+      ]
+    },
+    {
+      id: 'rails',
+      type: 'choice',
+      label: 'Which payment rails or chains are involved, if any?',
+      options: [
+        'Solana (Solana Pay, SPL tokens)',
+        'Ethereum or an L2 (stablecoin transfers, smart contracts)',
+        'Agent-to-agent stablecoin payments (x402 / AP2 / machine payments)',
+        'No blockchain rails — this is off-chain automation',
+        'Not sure yet'
+      ]
+    },
+    {
+      id: 'jurisdiction',
+      type: 'choice',
+      label: 'Where are your users, mainly?',
+      hint: 'Which rules apply to you depends almost entirely on this.',
+      options: [
+        'EU / EEA',
+        'UK',
+        'US',
+        'Rest of world',
+        'Mixed / not decided'
+      ]
+    },
+    {
+      id: 'users',
+      type: 'text',
+      label: 'Who uses it day to day?',
+      placeholder: 'e.g. merchants checking out customers, an internal ops team, other AI agents'
+    },
+    {
+      id: 'stack',
+      type: 'choice',
+      label: 'What does your current stack look like?',
+      options: [
+        'Mostly Microsoft/Power Platform',
+        'Custom web stack (React, Node, etc.)',
+        'No existing stack — starting from scratch',
+        'Not sure yet'
+      ]
+    },
+    {
+      id: 'extra',
+      type: 'text',
+      label: 'Anything else worth knowing?',
+      hint: 'Budget ceiling, timeline, a constraint you already know about. Optional.',
+      placeholder: 'Optional',
+      optional: true
+    }
+  ];
+
+  var STORAGE_KEY = 'ledgerworks_brief_answers';
+  var answers = {};
+  var current = 0;
+
+  var savedAnswers = null;
+  try {
+    savedAnswers = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || 'null');
+  } catch (e) { savedAnswers = null; }
+  if (savedAnswers) answers = savedAnswers;
+
+  var host = document.getElementById('brief-question-host');
+  var progress = document.getElementById('brief-progress');
+  var backBtn = document.getElementById('brief-back');
+  var nextBtn = document.getElementById('brief-next');
+  var wizard = document.getElementById('brief-wizard');
+  var checkoutLoadingEl = document.getElementById('brief-checkout-loading');
+  var loadingEl = document.getElementById('brief-loading');
+  var errorEl = document.getElementById('brief-error');
+  var cancelledEl = document.getElementById('brief-cancelled-note');
+  var resultEl = document.getElementById('brief-result');
+  var outputEl = document.getElementById('brief-output');
+  var downloadBtn = document.getElementById('brief-download');
+
+  function renderQuestion() {
+    var q = questions[current];
+    progress.textContent = 'Question ' + (current + 1) + ' of ' + questions.length;
+    var html = '<p class="brief-question">' + q.label + '</p>';
+    if (q.hint) html += '<p class="brief-hint">' + q.hint + '</p>';
+
+    if (q.type === 'text') {
+      var val = answers[q.id] || '';
+      html += '<textarea id="brief-input-' + q.id + '" placeholder="' + (q.placeholder || '') + '">' + val + '</textarea>';
+      host.innerHTML = html;
+      document.getElementById('brief-input-' + q.id).addEventListener('input', function (e) {
+        answers[q.id] = e.target.value;
+      });
+    } else {
+      html += '<div class="choice-group">';
+      q.options.forEach(function (opt, i) {
+        var checked = answers[q.id] === opt ? ' selected' : '';
+        html += '<label class="choice-option' + checked + '" data-value="' + i + '">' +
+                '<input type="radio" name="brief-' + q.id + '"> ' + opt + '</label>';
+      });
+      html += '</div>';
+      host.innerHTML = html;
+      var opts = host.querySelectorAll('.choice-option');
+      opts.forEach(function (el) {
+        el.addEventListener('click', function () {
+          opts.forEach(function (o) { o.classList.remove('selected'); });
+          el.classList.add('selected');
+          answers[q.id] = q.options[parseInt(el.getAttribute('data-value'), 10)];
+        });
+      });
+    }
+
+    backBtn.style.visibility = current === 0 ? 'hidden' : 'visible';
+    nextBtn.textContent = current === questions.length - 1 ? 'Continue to payment — €190' : 'Next';
+  }
+
+  function currentAnswered() {
+    var q = questions[current];
+    if (q.optional) return true;
+    return !!(answers[q.id] && answers[q.id].trim && answers[q.id].trim().length > 0 || answers[q.id]);
+  }
+
+  backBtn.addEventListener('click', function () {
+    if (current > 0) { current -= 1; renderQuestion(); }
+  });
+
+  nextBtn.addEventListener('click', function () {
+    if (!currentAnswered()) {
+      alert('Pick an answer or write a line before moving on.');
+      return;
+    }
+    if (current < questions.length - 1) {
+      current += 1;
+      renderQuestion();
+    } else {
+      goToCheckout();
+    }
+  });
+
+  function saveAnswers() {
+    try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(answers)); } catch (e) {}
+  }
+
+  function goToCheckout() {
+    saveAnswers();
+    wizard.style.display = 'none';
+    errorEl.style.display = 'none';
+    checkoutLoadingEl.style.display = 'block';
+
+    fetch('/api/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ answers: answers })
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error('Could not start checkout (' + res.status + ')');
+        return res.json();
+      })
+      .then(function (data) {
+        if (!data.url) throw new Error('No checkout URL returned');
+        window.location.href = data.url; // hands off to Stripe's hosted page
+      })
+      .catch(function (err) {
+        checkoutLoadingEl.style.display = 'none';
+        wizard.style.display = 'block';
+        errorEl.style.display = 'block';
+        errorEl.textContent = 'Could not open checkout right now (' + err.message + '). Please try again, or email hello@ledgerworks.example directly.';
+      });
+  }
+
+  function generateBrief(sessionId) {
+    wizard.style.display = 'none';
+    errorEl.style.display = 'none';
+    loadingEl.style.display = 'block';
+
+    fetch('/api/brief', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ answers: answers, sessionId: sessionId })
+    })
+      .then(function (res) {
+        return res.json().then(function (data) {
+          if (!res.ok) throw new Error(data.error || ('Request failed (' + res.status + ')'));
+          return data;
+        });
+      })
+      .then(function (data) {
+        loadingEl.style.display = 'none';
+        outputEl.textContent = data.brief;
+        resultEl.style.display = 'block';
+        if (data.truncated) {
+          errorEl.style.display = 'block';
+          errorEl.textContent = 'This brief was cut short at the length limit. Email hello@ledgerworks.example and I will send the full version.';
+        }
+        try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) {}
+      })
+      .catch(function (err) {
+        loadingEl.style.display = 'none';
+        wizard.style.display = 'block';
+        errorEl.style.display = 'block';
+        errorEl.textContent = 'Could not generate the brief (' + err.message + '). If you were charged, email hello@ledgerworks.example with your payment confirmation and I\'ll send it manually.';
+      });
+  }
+
+  // Handle return from Stripe Checkout (success or cancel)
+  (function handleCheckoutReturn() {
+    var params = new URLSearchParams(window.location.search);
+    var sessionId = params.get('session_id');
+    var cancelled = params.get('checkout') === 'cancelled';
+
+    if (sessionId) {
+      window.history.replaceState({}, '', window.location.pathname + '#brief');
+      generateBrief(sessionId);
+      return;
+    }
+    if (cancelled) {
+      window.history.replaceState({}, '', window.location.pathname + '#brief');
+      cancelledEl.style.display = 'block';
+    }
+  })();
+
+  downloadBtn.addEventListener('click', function () {
+    var blob = new Blob([outputEl.textContent], { type: 'text/markdown' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'ledgerworks-build-brief.md';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  renderQuestion();
+})();
 </script>
 
 </body>
