@@ -167,7 +167,7 @@ module.exports = async function handler(req, res) {
   const ageHours = (Date.now() / 1000 - (session.created || 0)) / 3600;
   if (ageHours > 48) {
     res.status(410).json({
-      error: 'This payment is too old to generate automatically. Email marton.thuroczy92@gmail.com and I will send it manually.'
+      error: 'This payment is too old to generate automatically. Email marton.thuroczy@ledgerworkshu.com and I will send it manually.'
     });
     return;
   }
@@ -182,7 +182,7 @@ module.exports = async function handler(req, res) {
       const ok = await kv.set(claimKey, 'in_progress', { nx: true, ex: 60 * 60 * 24 * 30 });
       if (!ok) {
         res.status(409).json({
-          error: 'This payment has already been used. If you did not receive your brief, email marton.thuroczy92@gmail.com.'
+          error: 'This payment has already been used. If you did not receive your brief, email marton.thuroczy@ledgerworkshu.com.'
         });
         return;
       }
@@ -206,7 +206,7 @@ module.exports = async function handler(req, res) {
   if (!answers) answers = sanitizeAnswers(req.body && req.body.answers);
   if (!answers.idea) {
     await releaseClaim();
-    res.status(400).json({ error: 'Could not recover your answers. Email marton.thuroczy92@gmail.com and I will generate it manually.' });
+    res.status(400).json({ error: 'Could not recover your answers. Email marton.thuroczy@ledgerworkshu.com and I will generate it manually.' });
     return;
   }
 
