@@ -52,6 +52,10 @@ module.exports = async function handler(req, res) {
       }],
       // Collected so you can reach the buyer if generation fails after payment.
       customer_creation: 'always',
+      // Managed Payments (Stripe's new default) requires a product tax code
+      // we don't have on this inline price_data line item — disable it here
+      // rather than maintain a persistent Stripe Product just to satisfy it.
+      managed_payments: { enabled: false },
       success_url: origin + '/?session_id={CHECKOUT_SESSION_ID}#brief',
       cancel_url: origin + '/?checkout=cancelled#brief'
     });
