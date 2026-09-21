@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>eÁFA-átállás 2027 — Ledgerworks</title>
+<meta name="description" content="Az ÁNYK 2026. december 31. után nem használható áfabevallásra. Személyre szabott eÁFA-átállási diagnózis: az Ön útvonala, az Ön határidői, és ami januárban eltörik.">
+<meta name="theme-color" content="#9B3A25">
+<link rel="canonical" href="https://ledgerworkshu.com/eafa">
+<meta property="og:type" content="website">
+<meta property="og:title" content="eÁFA-átállás 2027 — Ledgerworks">
+<meta property="og:description" content="Az ÁNYK 2026. december 31. után nem használható áfabevallásra. Nézze meg, melyik útvonalon van, és mi a teendője január 20-ig.">
+<meta property="og:url" content="https://ledgerworkshu.com/eafa">
+<meta property="og:locale" content="hu_HU">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="eÁFA-átállás 2027 — Ledgerworks">
+<meta name="twitter:description" content="Az ÁNYK 2026. december 31. után nem használható áfabevallásra. Nézze meg, melyik útvonalon van, és mi a teendője január 20-ig.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23181C1A'/%3E%3Cpath d='M8 10h16M8 16h16M8 22h10' stroke='%23E28A6F' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+  /* Page-specific additions on top of the shared system. */
+  .countdown {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent);
+    border: 1px solid var(--rule);
+    background: var(--bg-alt);
+    border-radius: 3px;
+    padding: 10px 14px;
+    display: inline-block;
+    margin-bottom: 22px;
+  }
+  .dateline {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 2px 20px;
+    border-top: 1px solid var(--rule);
+    padding-top: 18px;
+  }
+  .dateline dt {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent);
+    padding: 12px 0 0;
+  }
+  .dateline dd {
+    margin: 0;
+    padding: 12px 0;
+    font-size: 15px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .dateline dt + dd { border-bottom: 1px solid var(--rule); }
+  .dateline dd small { display: block; color: var(--ink-soft); font-size: 13px; margin-top: 3px; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .note {
+    font-size: 13px;
+    color: var(--ink-soft);
+    border-left: 2px solid var(--rule);
+    padding-left: 14px;
+    margin: 20px 0 0;
+  }
+  .price-line {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    margin: 0 0 4px;
+  }
+  @media (max-width: 720px) {
+    .dateline { grid-template-columns: 1fr; gap: 0; }
+    .dateline dt { padding-bottom: 0; }
+    .dateline dt + dd { padding-top: 4px; }
+    .split { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="wordmark" href="/" style="text-decoration:none;">LEDGERWORKS</a>
+    <nav>
+      <a href="#mi-valtozik">Mi változik</a>
+      <a href="#hataridok">Határidők</a>
+      <a href="#diagnozis">Diagnózis</a>
+    </nav>
+  </div>
+</header>
+
+<section class="wrap" style="padding: 56px 0 40px;">
+  <div class="countdown" id="countdown">Az ÁNYK-ig hátralévő idő betöltése…</div>
+  <h1 style="font-size: clamp(30px, 4vw, 42px); line-height: 1.16; font-weight: 600; margin: 0 0 18px; max-width: 26ch;">Januártól az áfabevallás nem űrlap lesz, hanem egyeztetés.</h1>
+  <p style="font-size: 17px; color: var(--ink-soft); max-width: 58ch; margin: 0 0 26px;">
+    Az ÁNYK 2026. december 31. után áfabevallásra nem használható. Az eÁFA
+    tételszinten dolgozik: a bevallás alapja az az adat, amit a NAV már tud a
+    cégéről. Ami eddig nem látszott — a be nem könyvelt bejövő számla, az
+    eltérő áfakód, a felfüggesztett adószámú partner — januártól validációs
+    hibaként jön elő.
+  </p>
+  <a class="btn btn-primary" href="#diagnozis">Kérem a diagnózist — 34 900 Ft</a>
+  <a class="btn btn-ghost" href="#mi-valtozik">Előbb a részletek</a>
+</section>
+
+<hr class="rule">
+
+<section class="wrap" id="mi-valtozik" style="padding: 48px 0;">
+  <h2 style="font-size: 24px; font-weight: 600; margin: 0 0 8px;">Mi változik pontosan</h2>
+  <p style="color: var(--ink-soft); max-width: 62ch; margin: 0 0 28px;">
+    Négy dolog esett egymásra tizenkét hónapon belül. Egyenként mindegyik
+    kezelhető; együtt ez a legnagyobb kényszerű átállás a magyar adózás
+    digitalizációjában.
+  </p>
+  <div class="split">
+    <div>
+      <h3 style="font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft); letter-spacing: 0.04em; margin: 0 0 6px;">ÁNYK</h3>
+      <p style="margin: 0 0 22px; font-size: 15px;">2026. december 31. után áfabevallásra nem használható. Utána kizárólag az eÁFA webes felülete vagy gép-gép (M2M) kapcsolat marad. Kivétel: korábbi időszakok önellenőrzése.</p>
+
+      <h3 style="font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft); letter-spacing: 0.04em; margin: 0 0 6px;">eÁFA M2M 2.0</h3>
+      <p style="margin: 0 0 22px; font-size: 15px;">A 2.0-s XSD 2026. augusztus 3-tól éles és kötelező, az 1.0 megszűnt. Aki tavaly fejlesztett rá, annak újra kell néznie.</p>
+    </div>
+    <div>
+      <h3 style="font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft); letter-spacing: 0.04em; margin: 0 0 6px;">Adategyeztetési eljárás</h3>
+      <p style="margin: 0 0 22px; font-size: 15px;">2025. január 1-jétől a NAV formálisan is egyeztetheti a partnerek egymásnak ellentmondó adatszolgáltatásait. Az eltérést megéri előbb megtalálni, mint a hatóságnak.</p>
+
+      <h3 style="font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft); letter-spacing: 0.04em; margin: 0 0 6px;">Nyugtaadat-szolgáltatás</h3>
+      <p style="margin: 0 0 22px; font-size: 15px;">2026. szeptember 1-jétől kötelező. Ez <em>adat</em>kötelezettség, nem hardverkötelezettség — a NAV ePénztárgép és eNyugta alkalmazása ingyenes, a hardveres e-pénztárgép külön ütemben, 2028 júliusáig tartó párhuzamos használattal fut.</p>
+    </div>
+  </div>
+  <p class="note">
+    A szoftverszállítók abban versenyeznek, hogy ki tudja <em>beküldeni</em> az
+    M2M-állományt. Az a kérdés, amire senki nem válaszol: egyezik-e a
+    könyvelése azzal a másolattal, amit a NAV már őriz a cégéről.
+  </p>
+</section>
+
+<hr class="rule">
+
+<section class="wrap" id="hataridok" style="padding: 48px 0;">
+  <h2 style="font-size: 24px; font-weight: 600; margin: 0 0 24px;">A naptár</h2>
+  <dl class="dateline">
+    <dt>2026.09.01.</dt>
+    <dd>A nyugtaadat-szolgáltatás kötelezővé vált.<small>Megtörtént. Akit érint és nem állt át, annak ez már futó kockázat.</small></dd>
+    <dt>2026.12.31.</dt>
+    <dd>Az ÁNYK utolsó napja áfabevallásra.<small>Eddig tart az átmeneti időszak: regisztrálni, tesztelni és párhuzamosan még ÁNYK-zni lehet.</small></dd>
+    <dt>2027.01.20.</dt>
+    <dd>A 2026. decemberi (havi) és IV. negyedéves bevallás határideje — már eÁFA-n keresztül.<small>Ez az első határidő, amire nincs tartalék megoldás.</small></dd>
+  </dl>
+  <p class="note">
+    A saját határidejét a bevallási gyakorisága dönti el. A diagnózis ezt
+    kiszámolja Önre, de a végleges dátumot erősítse meg a könyvelőjével vagy a
+    NAV közleményével.
+  </p>
+</section>
+
+<hr class="rule">
+
+<section class="wrap" id="diagnozis" style="padding: 48px 0 64px;">
+  <h2 style="font-size: 24px; font-weight: 600; margin: 0 0 8px;">eÁFA-átállási diagnózis</h2>
+  <p style="color: var(--ink-soft); max-width: 62ch; margin: 0 0 6px;">
+    Nyolc kérdés, majd egy ügynök összeállítja a cégre szabott átállási tervet:
+    melyik útvonalon van (webes felület vagy M2M) és miért, mik a saját
+    határidői, mi törik el januárban, melyik adatminőségi kockázat a
+    legvalószínűbb Önnél, heti bontású teendőlista január 20-ig, és a konkrét
+    kérdések, amiket a könyvelőjének és a szoftverszállítójának fel kell tennie.
+  </p>
+  <p class="price-line">34 900 Ft</p>
+  <p style="color: var(--ink-soft); font-size: 13px; margin: 0 0 26px;">egyszeri · pár perc alatt elkészül · letölthető .md fájlban</p>
+
+  <div class="brief-shell">
+    <div id="eafa-cancelled-note" class="brief-error" style="display:none; margin-bottom: 16px;">A fizetést megszakította — a válaszai megvannak, bármikor folytathatja.</div>
+
+    <div id="eafa-wizard">
+      <div class="brief-progress" id="eafa-progress">1. kérdés a 8-ból</div>
+      <div id="eafa-question-host"></div>
+      <div class="brief-nav">
+        <button class="btn btn-ghost" id="eafa-back" type="button">Vissza</button>
+        <button class="btn btn-primary" id="eafa-next" type="button">Tovább</button>
+      </div>
+    </div>
+
+    <div id="eafa-checkout-loading" class="brief-loading" style="display:none;">Biztonságos fizetés megnyitása…</div>
+    <div id="eafa-loading" class="brief-loading" style="display:none;">Fizetés megerősítve — készül a diagnózis, általában 20–40 másodperc…</div>
+    <div id="eafa-error" class="brief-error" style="display:none;"></div>
+
+    <div id="eafa-result" style="display:none;">
+      <div class="brief-output" id="eafa-output"></div>
+      <div class="brief-nav">
+        <button class="btn btn-ghost" id="eafa-download" type="button">Letöltés (.md)</button>
+        <a class="btn btn-primary" href="mailto:marton.thuroczy@ledgerworkshu.com?subject=eÁFA-előrepülés">Kérdésem van</a>
+      </div>
+    </div>
+  </div>
+
+  <p class="note">
+    Ezt a diagnózist AI-ügynök készíti, tervezési célra. Amit határidőről,
+    áfakötelezettségről vagy jogszabályi megfelelésről ír, az kiindulási
+    jelzés, nem adótanácsadás és nem könyvelési szolgáltatás — mielőtt lépne,
+    erősítse meg a könyvelőjével vagy adótanácsadójával.
+  </p>
+</section>
+
+<hr class="rule">
+
+<footer class="wrap" style="padding: 28px 0 48px; font-size: 13px; color: var(--ink-soft);">
+  <p style="margin: 0 0 8px; max-width: 70ch;">
+    A Ledgerworks szoftverfejlesztési és automatizálási szolgáltatást nyújt.
+    Nem végez könyvelést, adótanácsadást, könyvvizsgálatot, és nem nyújt be
+    bevallást az ügyfelei nevében. A forintos fizetés licencelt
+    fizetésszolgáltatón keresztül fut.
+  </p>
+  <p style="margin: 0;"><a href="mailto:marton.thuroczy@ledgerworkshu.com">marton.thuroczy@ledgerworkshu.com</a> · <a href="/">ledgerworkshu.com</a></p>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  // Counts down to the last day ÁNYK accepts a VAT return. Local midnight is
+  // close enough — this is a nudge, not a deadline clock anyone should file by.
+  (function renderCountdown() {
+    var el = document.getElementById('countdown');
+    var anyk = new Date(2026, 11, 31, 23, 59, 59); // 2026-12-31, month is 0-based
+    var days = Math.ceil((anyk - new Date()) / 86400000);
+    el.textContent = days > 0
+      ? 'AZ ÁNYK-BÓL ' + days + ' NAP VAN HÁTRA · ELSŐ eÁFA-HATÁRIDŐ: 2027.01.20.'
+      : 'AZ ÁNYK LEJÁRT · ELSŐ eÁFA-HATÁRIDŐ: 2027.01.20.';
+  })();
+
+  var questions = [
+    {
+      id: 'tevekenyseg',
+      type: 'text',
+      label: 'Mivel foglalkozik a cég, és milyen cégformában?',
+      hint: 'Pár mondat elég. A tevékenység dönti el, milyen áfa-helyzetek jöhetnek elő.',
+      placeholder: 'pl. Kft., építőipari alvállalkozó, 12 fő, belföldi megrendelők'
+    },
+    {
+      id: 'bevallas',
+      type: 'choice',
+      label: 'Milyen gyakorisággal ad be áfabevallást?',
+      options: ['Havonta', 'Negyedévente', 'Évente', 'Nem tudom']
+    },
+    {
+      id: 'kimeno',
+      type: 'choice',
+      label: 'Hány kimenő számlát állít ki havonta?',
+      hint: 'Ez dönti el, hogy a webes eÁFA-felület elég-e, vagy M2M-re van szüksége.',
+      options: ['0–50', '51–200', '201–500', '501–2000', '2000 felett']
+    },
+    {
+      id: 'bejovo',
+      type: 'choice',
+      label: 'Hány bejövő (befogadott) számlát fogad be havonta?',
+      options: ['0–50', '51–200', '201–500', '501–2000', '2000 felett']
+    },
+    {
+      id: 'szoftver',
+      type: 'text',
+      label: 'Milyen számlázó- és könyvelőprogramot használ ma?',
+      hint: 'Ha nem tudja pontosan, írja le, amit tud — a szállító neve is segít.',
+      placeholder: 'pl. Számlázz.hu a kimenő számlákra, a könyvelő Kulcs-Softot használ'
+    },
+    {
+      id: 'ki_keszit',
+      type: 'choice',
+      label: 'Ki készíti ma az áfabevallást?',
+      options: [
+        'Külső könyvelő vagy könyvelőiroda',
+        'Belső könyvelő / pénzügyes',
+        'Saját magam, ÁNYK-ban',
+        'Könyvelőiroda vagyok — több ügyfélnek készítem'
+      ]
+    },
+    {
+      id: 'nyugta',
+      type: 'choice',
+      label: 'Ad-e ki nyugtát, és ha igen, hogyan?',
+      hint: 'A 2026. szeptember 1-jei nyugtaadat-szolgáltatás miatt kérdés.',
+      options: [
+        'Online pénztárgéppel',
+        'Nyugtatömbbel vagy szoftverből',
+        'Nem adok nyugtát, csak számlát állítok ki',
+        'Nem tudom'
+      ]
+    },
+    {
+      id: 'specialis',
+      type: 'text',
+      label: 'Van-e különleges áfa-helyzete? Bármi más, amit tudni érdemes?',
+      hint: 'Pl. fordított adózás, EU-s ügyletek, import, pénzforgalmi elszámolás, arányosítás, alanyi mentesség, csoportos adóalanyiság. Nem kötelező.',
+      placeholder: 'Nem kötelező',
+      optional: true
+    }
+  ];
+
+  var STORAGE_KEY = 'ledgerworks_eafa_answers';
+  var answers = {};
+  var current = 0;
+
+  var savedAnswers = null;
+  try {
+    savedAnswers = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || 'null');
+  } catch (e) { savedAnswers = null; }
+  if (savedAnswers) answers = savedAnswers;
+
+  var host = document.getElementById('eafa-question-host');
+  var progress = document.getElementById('eafa-progress');
+  var backBtn = document.getElementById('eafa-back');
+  var nextBtn = document.getElementById('eafa-next');
+  var wizard = document.getElementById('eafa-wizard');
+  var checkoutLoadingEl = document.getElementById('eafa-checkout-loading');
+  var loadingEl = document.getElementById('eafa-loading');
+  var errorEl = document.getElementById('eafa-error');
+  var cancelledEl = document.getElementById('eafa-cancelled-note');
+  var resultEl = document.getElementById('eafa-result');
+  var outputEl = document.getElementById('eafa-output');
+  var downloadBtn = document.getElementById('eafa-download');
+
+  // Answers are rendered as text nodes, never interpolated into HTML — the
+  // wizard writes back into innerHTML on every step, so a pasted value
+  // containing markup would otherwise execute.
+  function renderQuestion() {
+    var q = questions[current];
+    progress.textContent = (current + 1) + '. kérdés a ' + questions.length + '-ból';
+    host.textContent = '';
+
+    var labelEl = document.createElement('p');
+    labelEl.className = 'brief-question';
+    labelEl.textContent = q.label;
+    host.appendChild(labelEl);
+
+    if (q.hint) {
+      var hintEl = document.createElement('p');
+      hintEl.className = 'brief-hint';
+      hintEl.textContent = q.hint;
+      host.appendChild(hintEl);
+    }
+
+    if (q.type === 'text') {
+      var ta = document.createElement('textarea');
+      ta.placeholder = q.placeholder || '';
+      ta.value = answers[q.id] || '';
+      ta.addEventListener('input', function (e) { answers[q.id] = e.target.value; });
+      host.appendChild(ta);
+    } else {
+      var group = document.createElement('div');
+      group.className = 'choice-group';
+      q.options.forEach(function (opt) {
+        var label = document.createElement('label');
+        label.className = 'choice-option' + (answers[q.id] === opt ? ' selected' : '');
+        var radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = 'eafa-' + q.id;
+        label.appendChild(radio);
+        label.appendChild(document.createTextNode(' ' + opt));
+        label.addEventListener('click', function () {
+          group.querySelectorAll('.choice-option').forEach(function (o) {
+            o.classList.remove('selected');
+          });
+          label.classList.add('selected');
+          answers[q.id] = opt;
+        });
+        group.appendChild(label);
+      });
+      host.appendChild(group);
+    }
+
+    backBtn.style.visibility = current === 0 ? 'hidden' : 'visible';
+    nextBtn.textContent = current === questions.length - 1
+      ? 'Tovább a fizetéshez — 34 900 Ft'
+      : 'Tovább';
+  }
+
+  function currentAnswered() {
+    var q = questions[current];
+    if (q.optional) return true;
+    var v = answers[q.id];
+    return typeof v === 'string' && v.trim().length > 0;
+  }
+
+  backBtn.addEventListener('click', function () {
+    if (current > 0) { current -= 1; renderQuestion(); }
+  });
+
+  nextBtn.addEventListener('click', function () {
+    if (!currentAnswered()) {
+      alert('Válasszon egy lehetőséget, vagy írjon egy sort, mielőtt továbblép.');
+      return;
+    }
+    if (current < questions.length - 1) {
+      current += 1;
+      renderQuestion();
+    } else {
+      goToCheckout();
+    }
+  });
+
+  function saveAnswers() {
+    try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(answers)); } catch (e) {}
+  }
+
+  function goToCheckout() {
+    saveAnswers();
+    wizard.style.display = 'none';
+    errorEl.style.display = 'none';
+    checkoutLoadingEl.style.display = 'block';
+
+    fetch('/api/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product: 'eafa', answers: answers })
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error('a fizetés nem indult el (' + res.status + ')');
+        return res.json();
+      })
+      .then(function (data) {
+        if (!data.url) throw new Error('nem érkezett fizetési link');
+        window.location.href = data.url; // hands off to Stripe's hosted page
+      })
+      .catch(function (err) {
+        checkoutLoadingEl.style.display = 'none';
+        wizard.style.display = 'block';
+        errorEl.style.display = 'block';
+        errorEl.textContent = 'A fizetést most nem sikerült megnyitni (' + err.message + '). Próbálja újra, vagy írjon a marton.thuroczy@ledgerworkshu.com címre.';
+      });
+  }
+
+  function generateDiagnosis(sessionId) {
+    wizard.style.display = 'none';
+    errorEl.style.display = 'none';
+    loadingEl.style.display = 'block';
+
+    fetch('/api/eafa', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ answers: answers, sessionId: sessionId })
+    })
+      .then(function (res) {
+        return res.json().then(function (data) {
+          if (!res.ok) throw new Error(data.error || ('a kérés nem sikerült (' + res.status + ')'));
+          return data;
+        });
+      })
+      .then(function (data) {
+        loadingEl.style.display = 'none';
+        outputEl.textContent = data.brief;
+        resultEl.style.display = 'block';
+        if (data.truncated) {
+          errorEl.style.display = 'block';
+          errorEl.textContent = 'A diagnózis a hosszkorlátnál megszakadt. Írjon a marton.thuroczy@ledgerworkshu.com címre, és elküldöm a teljes változatot.';
+        }
+        try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) {}
+      })
+      .catch(function (err) {
+        loadingEl.style.display = 'none';
+        wizard.style.display = 'block';
+        errorEl.style.display = 'block';
+        errorEl.textContent = 'A diagnózist nem sikerült elkészíteni (' + err.message + '). Ha a fizetés lement, küldje el a visszaigazolást a marton.thuroczy@ledgerworkshu.com címre, és kézzel elkészítem.';
+      });
+  }
+
+  // Handle return from Stripe Checkout (success or cancel)
+  (function handleCheckoutReturn() {
+    var params = new URLSearchParams(window.location.search);
+    var sessionId = params.get('session_id');
+    var cancelled = params.get('checkout') === 'cancelled';
+
+    if (sessionId) {
+      window.history.replaceState({}, '', window.location.pathname + '#diagnozis');
+      generateDiagnosis(sessionId);
+      return;
+    }
+    if (cancelled) {
+      window.history.replaceState({}, '', window.location.pathname + '#diagnozis');
+      cancelledEl.style.display = 'block';
+    }
+  })();
+
+  downloadBtn.addEventListener('click', function () {
+    var blob = new Blob([outputEl.textContent], { type: 'text/markdown' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'eafa-atallasi-diagnozis.md';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  renderQuestion();
+})();
+</script>
+
+</body>
+</html>
