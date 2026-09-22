@@ -7,10 +7,14 @@
 <meta name="description" content="AI agents for the parts of crypto and fintech operations nobody wants to demo — support, ops automation, and MiCA/KYC compliance triage. Non-custodial, disclosure-first, built by one person who ships.">
 <meta name="theme-color" content="#9B3A25">
 <link rel="canonical" href="https://ledgerworkshu.com/">
+<link rel="alternate" hreflang="en" href="https://ledgerworkshu.com/?lang=en">
+<link rel="alternate" hreflang="hu" href="https://ledgerworkshu.com/?lang=hu">
+<link rel="alternate" hreflang="x-default" href="https://ledgerworkshu.com/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Ledgerworks — AI agents for crypto & fintech operations">
 <meta property="og:description" content="Support agents, ops automation, and compliance triage — built non-custodially, disclosed honestly, and maintained by one person who ships.">
 <meta property="og:url" content="https://ledgerworkshu.com/">
+<meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Ledgerworks — AI agents for crypto & fintech operations">
 <meta name="twitter:description" content="Support agents, ops automation, and compliance triage — built non-custodially, disclosed honestly, and maintained by one person who ships.">
@@ -342,6 +346,32 @@
     .price-actions .btn { flex: 1; }
     nav { gap: 16px; }
   }
+  /* ---- language switch ---- */
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.03em;
+  }
+  .lang-opt {
+    text-decoration: none;
+    color: var(--ink-soft);
+    padding: 2px 1px;
+    border-bottom: 1px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .lang-opt:hover, .lang-opt:focus-visible { color: var(--ink); }
+  .lang-opt.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .lang-sep { color: var(--rule); }
+
+  /* The header is a single flex row; adding the language switch pushes it past
+     a phone's width, so let it wrap onto a second line instead of scrolling. */
+  @media (max-width: 620px) {
+    header .wrap { flex-wrap: wrap; row-gap: 12px; }
+    nav { flex-wrap: wrap; gap: 8px 16px; }
+  }
 </style>
 </head>
 <body>
@@ -350,81 +380,82 @@
   <div class="wrap">
     <div class="wordmark">LEDGERWORKS</div>
     <nav>
-      <a href="#work">Work</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#brief">Get a brief</a>
-      <a href="#start">Start a build</a>
+      <a href="#work" data-i18n="nav.work">Work</a>
+      <a href="#pricing" data-i18n="nav.pricing">Pricing</a>
+      <a href="#brief" data-i18n="nav.brief">Get a brief</a>
+      <a href="#start" data-i18n="nav.start">Start a build</a>
       <a href="/eafa" lang="hu">eÁFA 2027</a>
+      <span class="lang-switch" data-lang-switch></span>
     </nav>
   </div>
 </header>
 
 <div class="wrap hero">
   <div>
-    <h1>AI agents for the parts of crypto and fintech operations nobody wants to demo.</h1>
-    <p class="lede">Support agents, ops automation, and compliance triage — built non-custodially, disclosed honestly, and maintained by one person who ships. No platform, no lock-in: you own what gets built.</p>
+    <h1 data-i18n="hero.h1">AI agents for the parts of crypto and fintech operations nobody wants to demo.</h1>
+    <p class="lede" data-i18n="hero.lede">Support agents, ops automation, and compliance triage — built non-custodially, disclosed honestly, and maintained by one person who ships. No platform, no lock-in: you own what gets built.</p>
     <div class="cta-row">
-      <a href="#brief" class="btn btn-primary">Get an automated brief — €190</a>
-      <a href="#start" class="btn btn-ghost">Request a full build</a>
+      <a href="#brief" class="btn btn-primary" data-i18n="hero.cta1">Get an automated brief — €190</a>
+      <a href="#start" class="btn btn-ghost" data-i18n="hero.cta2">Request a full build</a>
     </div>
   </div>
   <div class="ledger">
-    <div class="ledger-head">RECENT ENTRIES</div>
+    <div class="ledger-head" data-i18n="ledger.head">RECENT ENTRIES</div>
     <div class="ledger-row">
       <div class="ledger-row-top">
         <span class="ledger-name">Ferry Till</span>
-        <span class="ledger-status live">LIVE</span>
+        <span class="ledger-status live" data-i18n="ledger.live">LIVE</span>
       </div>
-      <p class="ledger-desc">Non-custodial Solana payment links + disclosure-first AI support widget for merchants.</p>
+      <p class="ledger-desc" data-i18n="ledger.ferry">Non-custodial Solana payment links + disclosure-first AI support widget for merchants.</p>
     </div>
     <div class="ledger-row">
       <div class="ledger-row-top">
-        <span class="ledger-name">MiCA triage agent</span>
-        <span class="ledger-status">IN BUILD</span>
+        <span class="ledger-name" data-i18n="ledger.micaName">MiCA triage agent</span>
+        <span class="ledger-status" data-i18n="ledger.inbuild">IN BUILD</span>
       </div>
-      <p class="ledger-desc">Routes small crypto firms to the right authorisation tier and tracks their deadline.</p>
+      <p class="ledger-desc" data-i18n="ledger.mica">Routes small crypto firms to the right authorisation tier and tracks their deadline.</p>
     </div>
     <div class="ledger-row">
       <div class="ledger-row-top">
-        <span class="ledger-name">Open build slot</span>
-        <span class="ledger-status">AVAILABLE</span>
+        <span class="ledger-name" data-i18n="ledger.slotName">Open build slot</span>
+        <span class="ledger-status" data-i18n="ledger.available">AVAILABLE</span>
       </div>
-      <p class="ledger-desc">One slot open for a new engagement this month.</p>
+      <p class="ledger-desc" data-i18n="ledger.slot">One slot open for a new engagement this month.</p>
     </div>
   </div>
 </div>
 
 <section id="work">
   <div class="wrap">
-    <h2>What gets built</h2>
-    <p class="section-intro">Four kinds of agents, all scoped to your stack — Copilot Studio, Claude, or custom, depending on what you already run.</p>
+    <h2 data-i18n="work.h2">What gets built</h2>
+    <p class="section-intro" data-i18n="work.intro">Four kinds of agents, all scoped to your stack — Copilot Studio, Claude, or custom, depending on what you already run.</p>
 
     <div class="service-row">
       <div class="service-code">SUPPORT</div>
       <div>
-        <h3>Onboarding & support agents</h3>
-        <p>Chat agents for merchants, freelancers, and exchange users — answers questions honestly, escalates what it shouldn't handle, never overstates what the product does.</p>
+        <h3 data-i18n="work.support.h">Onboarding & support agents</h3>
+        <p data-i18n="work.support.p">Chat agents for merchants, freelancers, and exchange users — answers questions honestly, escalates what it shouldn't handle, never overstates what the product does.</p>
       </div>
     </div>
     <div class="service-row">
       <div class="service-code">OPS</div>
       <div>
-        <h3>Ops & reporting automation</h3>
-        <p>Reconciliation checks, alert triage, dashboards that build themselves — Power Automate, SQL, and Power BI underneath, an agent on top deciding what needs a human.</p>
+        <h3 data-i18n="work.ops.h">Ops & reporting automation</h3>
+        <p data-i18n="work.ops.p">Reconciliation checks, alert triage, dashboards that build themselves — Power Automate, SQL, and Power BI underneath, an agent on top deciding what needs a human.</p>
       </div>
     </div>
     <div class="service-row">
       <div class="service-code">COMPLY</div>
       <div>
-        <h3>Compliance triage agents</h3>
-        <p>Walks a small crypto firm through what MiCA or KYC/AML actually requires of them, tracks deadlines, generates the paper trail. Advisory triage, not legal advice.</p>
+        <h3 data-i18n="work.comply.h">Compliance triage agents</h3>
+        <p data-i18n="work.comply.p">Walks a small crypto firm through what MiCA or KYC/AML actually requires of them, tracks deadlines, generates the paper trail. Advisory triage, not legal advice.</p>
       </div>
     </div>
     <div class="service-row">
       <div class="service-code">AGENT</div>
       <div>
-        <h3>Custom multi-agent builds</h3>
-        <p>Backtesting sandboxes, cross-model market analysis, anything where more than one agent needs to reason and disagree before a human decides.</p>
+        <h3 data-i18n="work.agent.h">Custom multi-agent builds</h3>
+        <p data-i18n="work.agent.p">Backtesting sandboxes, cross-model market analysis, anything where more than one agent needs to reason and disagree before a human decides.</p>
       </div>
     </div>
   </div>
@@ -432,28 +463,28 @@
 
 <section class="alt">
   <div class="wrap">
-    <h2>How an engagement runs</h2>
-    <p class="section-intro">Four steps, same order every time — or start with an automated brief if you're not ready for a scope call.</p>
+    <h2 data-i18n="proc.h2">How an engagement runs</h2>
+    <p class="section-intro" data-i18n="proc.intro">Four steps, same order every time — or start with an automated brief if you're not ready for a scope call.</p>
     <div class="process">
       <div>
         <div class="step-num">1</div>
-        <h3>Scope (or brief)</h3>
-        <p>30 minutes on a call, or 5 minutes with the automated brief agent below.</p>
+        <h3 data-i18n="proc.1.h">Scope (or brief)</h3>
+        <p data-i18n="proc.1.p">30 minutes on a call, or 5 minutes with the automated brief agent below.</p>
       </div>
       <div>
         <div class="step-num">2</div>
-        <h3>Build</h3>
-        <p>Working version in days, not months — you see it running early, not at the end.</p>
+        <h3 data-i18n="proc.2.h">Build</h3>
+        <p data-i18n="proc.2.p">Working version in days, not months — you see it running early, not at the end.</p>
       </div>
       <div>
         <div class="step-num">3</div>
-        <h3>Ship</h3>
-        <p>Deployed into your existing stack. You own the code and the agent.</p>
+        <h3 data-i18n="proc.3.h">Ship</h3>
+        <p data-i18n="proc.3.p">Deployed into your existing stack. You own the code and the agent.</p>
       </div>
       <div>
         <div class="step-num">4</div>
-        <h3>Iterate</h3>
-        <p>Retainer clients get ongoing changes as the business needs shift.</p>
+        <h3 data-i18n="proc.4.h">Iterate</h3>
+        <p data-i18n="proc.4.p">Retainer clients get ongoing changes as the business needs shift.</p>
       </div>
     </div>
   </div>
@@ -461,87 +492,87 @@
 
 <section id="pricing">
   <div class="wrap">
-    <h2>Pricing</h2>
-    <p class="section-intro">One-off builds or an ongoing retainer. Prices are a starting point for a first scope call, not a fixed menu.</p>
+    <h2 data-i18n="price.h2">Pricing</h2>
+    <p class="section-intro" data-i18n="price.intro">One-off builds or an ongoing retainer. Prices are a starting point for a first scope call, not a fixed menu.</p>
 
     <div class="price-row featured">
       <div>
-        <span class="price-tag">SELF-SERVE</span>
-        <p class="price-name">Automated build brief</p>
-        <p class="price-desc">Answer a few questions, get an architecture recommendation, licensing/rail flags, and a prompt pack you can hand to an AI coding tool. No call, generated in minutes.</p>
+        <span class="price-tag" data-i18n="price.selfserve">SELF-SERVE</span>
+        <p class="price-name" data-i18n="price.brief.name">Automated build brief</p>
+        <p class="price-desc" data-i18n="price.brief.desc">Answer a few questions, get an architecture recommendation, licensing/rail flags, and a prompt pack you can hand to an AI coding tool. No call, generated in minutes.</p>
       </div>
-      <div class="price-amount">€190<span class="price-cadence">one-time</span></div>
+      <div class="price-amount" data-i18n-html="price.brief.amount">€190<span class="price-cadence">one-time</span></div>
       <div class="price-actions">
-        <a class="btn btn-primary" href="#brief">Start the brief</a>
+        <a class="btn btn-primary" href="#brief" data-i18n="price.brief.cta">Start the brief</a>
       </div>
     </div>
     <div class="price-row">
       <div>
-        <p class="price-name">Single build</p>
-        <p class="price-desc">One agent, one clear job — support widget, reporting bot, or a first compliance triage flow. Fixed price, agreed after the scope call. €190 credited if you've already bought a brief within 30 days.</p>
+        <p class="price-name" data-i18n="price.single.name">Single build</p>
+        <p class="price-desc" data-i18n="price.single.desc">One agent, one clear job — support widget, reporting bot, or a first compliance triage flow. Fixed price, agreed after the scope call. €190 credited if you've already bought a brief within 30 days.</p>
       </div>
-      <div class="price-amount">from €1,800<span class="price-cadence">one-time</span></div>
+      <div class="price-amount" data-i18n-html="price.single.amount">from €1,800<span class="price-cadence">one-time</span></div>
       <div class="price-actions">
-        <a class="btn btn-primary" href="mailto:marton.thuroczy@ledgerworkshu.com?subject=Start%3A%20Single%20build&body=Hi%2C%20I%27d%20like%20to%20start%20a%20Single%20Build%20engagement.%0A%0AWhat%20I%20need%20built%3A%0A">Start</a>
-        <a class="btn btn-ghost btn-usdc" href="solana:GwrpCPcGkNXV3Ym5rqFKbcgo1Jnph29BAVUbnioe8uYY?label=Ledgerworks&message=Single%20build">Pay with USDC</a>
+        <a class="btn btn-primary" href="mailto:marton.thuroczy@ledgerworkshu.com?subject=Start%3A%20Single%20build&body=Hi%2C%20I%27d%20like%20to%20start%20a%20Single%20Build%20engagement.%0A%0AWhat%20I%20need%20built%3A%0A" data-i18n="price.start">Start</a>
+        <a class="btn btn-ghost btn-usdc" href="solana:GwrpCPcGkNXV3Ym5rqFKbcgo1Jnph29BAVUbnioe8uYY?label=Ledgerworks&message=Single%20build" data-i18n="price.usdc">Pay with USDC</a>
       </div>
     </div>
     <div class="price-row">
       <div>
-        <p class="price-name">Build retainer</p>
-        <p class="price-desc">A standing monthly slot for small builds and iteration — new agents, fixes, and changes as your operation grows.</p>
+        <p class="price-name" data-i18n="price.retainer.name">Build retainer</p>
+        <p class="price-desc" data-i18n="price.retainer.desc">A standing monthly slot for small builds and iteration — new agents, fixes, and changes as your operation grows.</p>
       </div>
-      <div class="price-amount">€450<span class="price-cadence">per month</span></div>
+      <div class="price-amount" data-i18n-html="price.retainer.amount">€450<span class="price-cadence">per month</span></div>
       <div class="price-actions">
-        <a class="btn btn-primary" href="mailto:marton.thuroczy@ledgerworkshu.com?subject=Start%3A%20Build%20retainer&body=Hi%2C%20I%27d%20like%20to%20start%20a%20Build%20Retainer.%0A%0AWhat%20I%20need%20built%3A%0A">Start</a>
-        <a class="btn btn-ghost btn-usdc" href="solana:GwrpCPcGkNXV3Ym5rqFKbcgo1Jnph29BAVUbnioe8uYY?label=Ledgerworks&message=Build%20retainer">Pay with USDC</a>
+        <a class="btn btn-primary" href="mailto:marton.thuroczy@ledgerworkshu.com?subject=Start%3A%20Build%20retainer&body=Hi%2C%20I%27d%20like%20to%20start%20a%20Build%20Retainer.%0A%0AWhat%20I%20need%20built%3A%0A" data-i18n="price.start">Start</a>
+        <a class="btn btn-ghost btn-usdc" href="solana:GwrpCPcGkNXV3Ym5rqFKbcgo1Jnph29BAVUbnioe8uYY?label=Ledgerworks&message=Build%20retainer" data-i18n="price.usdc">Pay with USDC</a>
       </div>
     </div>
     <div class="price-row">
       <div>
-        <p class="price-name">Fractional AI partner</p>
-        <p class="price-desc">Dedicated ongoing capacity — multiple agents, deeper ops integration, priority turnaround.</p>
+        <p class="price-name" data-i18n="price.partner.name">Fractional AI partner</p>
+        <p class="price-desc" data-i18n="price.partner.desc">Dedicated ongoing capacity — multiple agents, deeper ops integration, priority turnaround.</p>
       </div>
-      <div class="price-amount">€1,200<span class="price-cadence">per month</span></div>
+      <div class="price-amount" data-i18n-html="price.partner.amount">€1,200<span class="price-cadence">per month</span></div>
       <div class="price-actions">
-        <a class="btn btn-primary" href="mailto:marton.thuroczy@ledgerworkshu.com?subject=Start%3A%20Fractional%20AI%20partner&body=Hi%2C%20I%27d%20like%20to%20start%20a%20Fractional%20AI%20Partner%20engagement.%0A%0AWhat%20I%20need%20built%3A%0A">Start</a>
-        <a class="btn btn-ghost btn-usdc" href="solana:GwrpCPcGkNXV3Ym5rqFKbcgo1Jnph29BAVUbnioe8uYY?label=Ledgerworks&message=Fractional%20AI%20partner">Pay with USDC</a>
+        <a class="btn btn-primary" href="mailto:marton.thuroczy@ledgerworkshu.com?subject=Start%3A%20Fractional%20AI%20partner&body=Hi%2C%20I%27d%20like%20to%20start%20a%20Fractional%20AI%20Partner%20engagement.%0A%0AWhat%20I%20need%20built%3A%0A" data-i18n="price.start">Start</a>
+        <a class="btn btn-ghost btn-usdc" href="solana:GwrpCPcGkNXV3Ym5rqFKbcgo1Jnph29BAVUbnioe8uYY?label=Ledgerworks&message=Fractional%20AI%20partner" data-i18n="price.usdc">Pay with USDC</a>
       </div>
     </div>
-    <p class="pricing-note">"Start" currently opens an email — swap the mailto links for Stripe Payment Links once billing is set up. "Pay with USDC" opens a Solana Pay request — confirm the exact amount by email first since USDC is USD-pegged, not EUR-pegged.</p>
+    <p class="pricing-note" data-i18n="price.note">"Start" currently opens an email — swap the mailto links for Stripe Payment Links once billing is set up. "Pay with USDC" opens a Solana Pay request — confirm the exact amount by email first since USDC is USD-pegged, not EUR-pegged.</p>
   </div>
 </section>
 
 <section class="alt" id="brief">
   <div class="wrap">
-    <h2>Automated build brief</h2>
-    <p class="section-intro">Seven questions, then a €190 checkout, then the brief. The agent drafts an architecture recommendation, flags anything that touches licensing or custody, and hands you a prompt pack — the same starting point I'd give a client after a scope call, generated on the spot.</p>
+    <h2 data-i18n="brief.h2">Automated build brief</h2>
+    <p class="section-intro" data-i18n="brief.intro">Seven questions, then a €190 checkout, then the brief. The agent drafts an architecture recommendation, flags anything that touches licensing or custody, and hands you a prompt pack — the same starting point I'd give a client after a scope call, generated on the spot.</p>
 
     <div class="brief-shell">
-      <div id="brief-cancelled-note" class="brief-error" style="display:none; margin-bottom: 16px;">Checkout was cancelled — your answers are still here, pick up whenever you're ready.</div>
+      <div id="brief-cancelled-note" class="brief-error" style="display:none; margin-bottom: 16px;" data-i18n="brief.cancelled">Checkout was cancelled — your answers are still here, pick up whenever you're ready.</div>
 
       <div id="brief-wizard">
         <div class="brief-progress" id="brief-progress">Question 1 of 7</div>
         <div id="brief-question-host"></div>
         <div class="brief-nav">
-          <button class="btn btn-ghost" id="brief-back" type="button">Back</button>
+          <button class="btn btn-ghost" id="brief-back" type="button" data-i18n="brief.back">Back</button>
           <button class="btn btn-primary" id="brief-next" type="button">Next</button>
         </div>
       </div>
 
-      <div id="brief-checkout-loading" class="brief-loading" style="display:none;">Opening secure checkout…</div>
-      <div id="brief-loading" class="brief-loading" style="display:none;">Payment confirmed — drafting the brief, usually 15–30 seconds…</div>
+      <div id="brief-checkout-loading" class="brief-loading" style="display:none;" data-i18n="brief.opening">Opening secure checkout…</div>
+      <div id="brief-loading" class="brief-loading" style="display:none;" data-i18n="brief.drafting">Payment confirmed — drafting the brief, usually 15–30 seconds…</div>
       <div id="brief-error" class="brief-error" style="display:none;"></div>
 
       <div id="brief-result" style="display:none;">
         <div class="brief-output" id="brief-output"></div>
         <div class="brief-nav">
-          <button class="btn btn-ghost" id="brief-download" type="button">Download brief (.md)</button>
-          <a class="btn btn-primary" href="#start">Book a full build</a>
+          <button class="btn btn-ghost" id="brief-download" type="button" data-i18n="brief.download">Download brief (.md)</button>
+          <a class="btn btn-primary" href="#start" data-i18n="brief.book">Book a full build</a>
         </div>
-        <p class="disclosure">This brief is generated by an AI agent for planning purposes. Anything it says about licensing, custody, or regulatory status is a starting flag, not legal advice — verify with counsel before you build on it.</p>
+        <p class="disclosure" data-i18n="brief.disclosure">This brief is generated by an AI agent for planning purposes. Anything it says about licensing, custody, or regulatory status is a starting flag, not legal advice — verify with counsel before you build on it.</p>
       </div>
-      <p class="form-note" style="margin-top: 16px;">Prefer to pay in USDC instead of card? Email <a href="mailto:marton.thuroczy@ledgerworkshu.com?subject=USDC%20payment%20-%20Automated%20build%20brief">marton.thuroczy@ledgerworkshu.com</a> with your transaction signature and I'll send the brief manually.</p>
+      <p class="form-note" style="margin-top: 16px;" data-i18n-html="brief.usdc">Prefer to pay in USDC instead of card? Email <a href="mailto:marton.thuroczy@ledgerworkshu.com?subject=USDC%20payment%20-%20Automated%20build%20brief">marton.thuroczy@ledgerworkshu.com</a> with your transaction signature and I'll send the brief manually.</p>
     </div>
   </div>
 </section>
@@ -549,28 +580,28 @@
 <section class="alt" id="start">
   <div class="wrap form-wrap">
     <div>
-      <h2>Request a build slot</h2>
-      <p class="section-intro" style="margin-bottom: 16px;">Tell me what you're trying to automate. I'll reply within two business days with whether it's a fit and a rough scope.</p>
-      <p class="form-note">This opens your email client with the details filled in — nothing is stored on this page.</p>
+      <h2 data-i18n="start.h2">Request a build slot</h2>
+      <p class="section-intro" style="margin-bottom: 16px;" data-i18n="start.intro">Tell me what you're trying to automate. I'll reply within two business days with whether it's a fit and a rough scope.</p>
+      <p class="form-note" data-i18n="start.note">This opens your email client with the details filled in — nothing is stored on this page.</p>
     </div>
     <form id="demo-form">
       <div>
-        <label for="f-name">Name</label>
+        <label for="f-name" data-i18n="start.name">Name</label>
         <input id="f-name" name="name" type="text" required>
       </div>
       <div>
-        <label for="f-email">Email</label>
+        <label for="f-email" data-i18n="start.email">Email</label>
         <input id="f-email" name="email" type="email" required>
       </div>
       <div>
-        <label for="f-company">Company (optional)</label>
+        <label for="f-company" data-i18n="start.company">Company (optional)</label>
         <input id="f-company" name="company" type="text">
       </div>
       <div>
-        <label for="f-need">What do you need built?</label>
+        <label for="f-need" data-i18n="start.need">What do you need built?</label>
         <textarea id="f-need" name="need" required></textarea>
       </div>
-      <button type="submit" class="btn btn-primary">Send request</button>
+      <button type="submit" class="btn btn-primary" data-i18n="start.send">Send request</button>
       <div id="form-status" role="status"></div>
     </form>
   </div>
@@ -579,12 +610,224 @@
 <footer>
   <div class="wrap">
     <hr class="rule" style="margin-bottom: 24px;">
-    <p>Ledgerworks provides software development and automation services. It does not provide investment, legal, custody, or payment services. Fiat billing runs through a licensed third-party processor; USDC payments are accepted directly to a wallet held for this purpose as payment for services rendered, the same way a card payment or bank transfer would be. The automated build brief is generated by an AI agent and is advisory only — it is not legal, tax, or regulatory advice.</p>
+    <p data-i18n="footer.legal">Ledgerworks provides software development and automation services. It does not provide investment, legal, custody, or payment services. Fiat billing runs through a licensed third-party processor; USDC payments are accepted directly to a wallet held for this purpose as payment for services rendered, the same way a card payment or bank transfer would be. The automated build brief is generated by an AI agent and is advisory only — it is not legal, tax, or regulatory advice.</p>
     <a class="mail" href="mailto:marton.thuroczy@ledgerworkshu.com">marton.thuroczy@ledgerworkshu.com</a>
   </div>
 </footer>
 
+
+<script src="/assets/i18n.js"></script>
 <script>
+(function () {
+  'use strict';
+
+  // ---- Hungarian copy ----------------------------------------------------
+  // The English side is read out of the markup on load (see assets/i18n.js),
+  // so only strings that have no element to read from are listed under `en`:
+  // the wizard, which renders itself.
+  var HU = {
+    'lang.switchLabel': 'Nyelv',
+    'lang.to.en': 'Váltás angolra',
+    'lang.to.hu': 'Váltás magyarra',
+
+    'nav.work': 'Munkák',
+    'nav.pricing': 'Árak',
+    'nav.brief': 'Brief kérése',
+    'nav.start': 'Építés indítása',
+
+    'hero.h1': 'AI-ügynökök a crypto- és fintech-működés azon részeire, amiket senki nem akar bemutatni.',
+    'hero.lede': 'Ügyfélszolgálati ügynökök, működés-automatizálás és megfelelőségi triázs — letétkezelés nélkül építve, őszintén dokumentálva, és egyetlen ember tartja karban, aki szállít. Nincs platform, nincs bezártság: amit megépítek, az az Öné.',
+    'hero.cta1': 'Automatikus brief — 190 €',
+    'hero.cta2': 'Teljes build kérése',
+
+    'ledger.head': 'LEGUTÓBBI TÉTELEK',
+    'ledger.live': 'ÉLES',
+    'ledger.ferry': 'Letétkezelés nélküli Solana fizetési linkek és közlés-központú AI ügyfélszolgálati widget kereskedőknek.',
+    'ledger.micaName': 'MiCA-triázs ügynök',
+    'ledger.inbuild': 'ÉPÜL',
+    'ledger.mica': 'Kis crypto-cégeket irányít a megfelelő engedélyezési szinthez, és követi a határidejüket.',
+    'ledger.slotName': 'Szabad build-hely',
+    'ledger.available': 'SZABAD',
+    'ledger.slot': 'Ebben a hónapban egy hely szabad új megbízásra.',
+
+    'work.h2': 'Mi épül',
+    'work.intro': 'Négyféle ügynök, mind az Ön meglévő rendszereire szabva — Copilot Studio, Claude vagy egyedi, attól függően, mit használ ma.',
+    'work.support.h': 'Onboarding- és ügyfélszolgálati ügynökök',
+    'work.support.p': 'Chat-ügynökök kereskedőknek, szabadúszóknak és tőzsdefelhasználóknak — őszintén válaszol, eszkalálja, amihez nem szabad hozzányúlnia, és soha nem állít többet a termékről, mint ami igaz.',
+    'work.ops.h': 'Működés- és riportautomatizálás',
+    'work.ops.p': 'Egyeztetési ellenőrzések, riasztás-triázs, magukat összerakó dashboardok — alul Power Automate, SQL és Power BI, fölötte egy ügynök, ami eldönti, mihez kell ember.',
+    'work.comply.h': 'Megfelelőségi triázs-ügynökök',
+    'work.comply.p': 'Végigvezet egy kis crypto-céget azon, mit vár el tőle ténylegesen a MiCA vagy a KYC/AML, követi a határidőket, és előállítja a papírnyomot. Tanácsadói triázs, nem jogi tanácsadás.',
+    'work.agent.h': 'Egyedi, több-ügynökös rendszerek',
+    'work.agent.p': 'Backteszt-homokozók, több modellt ütköztető piacelemzés — minden olyan eset, ahol több ügynöknek kell gondolkodnia és vitáznia, mielőtt ember dönt.',
+
+    'proc.h2': 'Hogyan zajlik egy megbízás',
+    'proc.intro': 'Négy lépés, mindig ugyanabban a sorrendben — vagy kezdje az automatikus briefel, ha még nem áll készen egy scope-hívásra.',
+    'proc.1.h': 'Scope (vagy brief)',
+    'proc.1.p': '30 perc telefonon, vagy 5 perc az alábbi automatikus brief-ügynökkel.',
+    'proc.2.h': 'Építés',
+    'proc.2.p': 'Működő verzió napok, nem hónapok alatt — korán látja futni, nem a végén.',
+    'proc.3.h': 'Élesítés',
+    'proc.3.p': 'Bekerül a meglévő rendszerébe. A kód és az ügynök az Öné.',
+    'proc.4.h': 'Iteráció',
+    'proc.4.p': 'A retaineres ügyfelek folyamatosan kapják a módosításokat, ahogy az üzleti igény változik.',
+
+    'price.h2': 'Árak',
+    'price.intro': 'Egyszeri build vagy folyamatos retainer. Az árak egy első scope-hívás kiindulópontjai, nem fix étlap.',
+    'price.selfserve': 'ÖNKISZOLGÁLÓ',
+    'price.brief.name': 'Automatikus build-brief',
+    'price.brief.desc': 'Válaszoljon néhány kérdésre, és kap egy architektúra-javaslatot, engedélyezési és fizetési-rail jelzéseket, plusz egy prompt-csomagot, amit átadhat egy AI kódoló eszköznek. Hívás nélkül, percek alatt.',
+    'price.brief.cta': 'Indítom a briefet',
+    'price.single.name': 'Egyszeri build',
+    'price.single.desc': 'Egy ügynök, egy világos feladat — support widget, riportbot vagy egy első megfelelőségi triázs-folyamat. Fix ár, a scope-hívás után egyeztetve. 190 € jóváírás, ha 30 napon belül már vásárolt briefet.',
+    'price.retainer.name': 'Build retainer',
+    'price.retainer.desc': 'Állandó havi hely kisebb buildekre és iterációra — új ügynökök, javítások és változtatások, ahogy a működés nő.',
+    'price.partner.name': 'Fractional AI partner',
+    'price.partner.desc': 'Dedikált, folyamatos kapacitás — több ügynök, mélyebb működési integráció, elsőbbségi átfutás.',
+    'price.brief.amount': '190 €<span class="price-cadence">egyszeri</span>',
+    'price.single.amount': '1 800 €-tól<span class="price-cadence">egyszeri</span>',
+    'price.retainer.amount': '450 €<span class="price-cadence">havonta</span>',
+    'price.partner.amount': '1 200 €<span class="price-cadence">havonta</span>',
+    'price.start': 'Indítás',
+    'price.usdc': 'Fizetés USDC-ben',
+    'price.note': 'A „Start” jelenleg e-mailt nyit — cserélje a mailto-linkeket Stripe Payment Linkre, amint a számlázás beállt. A „Pay with USDC” Solana Pay kérést nyit — a pontos összeget előbb e-mailben erősítse meg, mert az USDC dollárhoz kötött, nem euróhoz.',
+
+    'brief.h2': 'Automatikus build-brief',
+    'brief.intro': 'Hét kérdés, majd egy 190 €-s fizetés, aztán a brief. Az ügynök architektúra-javaslatot ír, megjelöl mindent, ami engedélyezést vagy letétkezelést érint, és ad egy prompt-csomagot — ugyanazt a kiindulópontot, amit egy scope-hívás után adnék, csak azonnal.',
+    'brief.cancelled': 'A fizetést megszakította — a válaszai megvannak, bármikor folytathatja.',
+    'brief.back': 'Vissza',
+    'brief.opening': 'Biztonságos fizetés megnyitása…',
+    'brief.drafting': 'Fizetés megerősítve — készül a brief, általában 15–30 másodperc…',
+    'brief.download': 'Brief letöltése (.md)',
+    'brief.book': 'Teljes build foglalása',
+    'brief.disclosure': 'Ezt a briefet AI-ügynök készíti, tervezési célra. Amit engedélyezésről, letétkezelésről vagy szabályozási státuszról ír, az kiindulási jelzés, nem jogi tanácsadás — mielőtt erre építene, ellenőrizze jogásszal.',
+    'brief.usdc': 'Kártya helyett inkább USDC-ben fizetne? Írjon a <a href="mailto:marton.thuroczy@ledgerworkshu.com?subject=USDC%20payment%20-%20Automated%20build%20brief">marton.thuroczy@ledgerworkshu.com</a> címre a tranzakció aláírásával, és kézzel elküldöm a briefet.',
+
+    'start.h2': 'Build-hely igénylése',
+    'start.intro': 'Írja le, mit szeretne automatizálni. Két munkanapon belül válaszolok, hogy belefér-e, és nagyjából mekkora munka.',
+    'start.note': 'Ez megnyitja az e-mail kliensét a kitöltött adatokkal — ez az oldal semmit nem tárol.',
+    'start.name': 'Név',
+    'start.email': 'E-mail',
+    'start.company': 'Cég (nem kötelező)',
+    'start.need': 'Mit szeretne megépíttetni?',
+    'start.send': 'Kérés küldése',
+
+    'footer.legal': 'A Ledgerworks szoftverfejlesztési és automatizálási szolgáltatást nyújt. Nem nyújt befektetési, jogi, letétkezelési vagy fizetési szolgáltatást. A fiat számlázás licencelt, harmadik fél fizetésszolgáltatón keresztül fut; az USDC-fizetést közvetlenül egy erre a célra tartott tárcára fogadom el, a nyújtott szolgáltatás ellenértékeként — ugyanúgy, ahogy egy kártyás fizetést vagy banki átutalást. Az automatikus build-briefet AI-ügynök készíti, és kizárólag tájékoztató jellegű: nem jogi, adó- vagy szabályozási tanácsadás.',
+
+    // wizard
+    'wiz.progress': '{n}. kérdés a {total}-ből',
+    'wiz.next': 'Tovább',
+    'wiz.pay': 'Tovább a fizetéshez — 190 €',
+    'wiz.validate': 'Válasszon egy lehetőséget, vagy írjon egy sort, mielőtt továbblép.',
+    'wiz.errCheckout': 'A fizetést most nem sikerült megnyitni ({msg}). Próbálja újra, vagy írjon közvetlenül a marton.thuroczy@ledgerworkshu.com címre.',
+    'wiz.errNoUrl': 'nem érkezett fizetési link',
+    'wiz.errStart': 'a fizetés nem indult el ({status})',
+    'wiz.errRequest': 'a kérés nem sikerült ({status})',
+    'wiz.errGenerate': 'A briefet nem sikerült elkészíteni ({msg}). Ha a fizetés lement, küldje el a visszaigazolást a marton.thuroczy@ledgerworkshu.com címre, és kézzel elküldöm.',
+    'wiz.truncated': 'Ez a brief a hosszkorlátnál megszakadt. Írjon a marton.thuroczy@ledgerworkshu.com címre, és elküldöm a teljes változatot.',
+    'form.sending': 'Megnyitom az e-mail kliensét a küldéshez.',
+
+    'q.idea.label': 'Mit szeretne megépíteni?',
+    'q.idea.hint': 'Egy-két mondat — magáról a dologról, nem a technológiáról.',
+    'q.idea.ph': 'pl. ügyfélszolgálati ügynök egy crypto-tőzsde onboarding-folyamatához',
+    'q.custody.label': 'Fog valaha ügyfélpénzt tartani vagy mozgatni?',
+    'q.custody.hint': 'Ez az egyetlen legfontosabb tényező abban, minek kell megfelelnie.',
+    'q.custody.o1': 'Nem — csak tájékoztat vagy belső működést automatizál',
+    'q.custody.o2': 'Igen, letétkezelés nélkül — a pénz tárcából tárcába megy, mi soha nem tartjuk',
+    'q.custody.o3': 'Igen, letétkezeléssel — valamikor mi tartanánk vagy kontrollálnánk az ügyfélpénzt',
+    'q.custody.o4': 'Még nem tudom',
+    'q.rails.label': 'Milyen fizetési railök vagy láncok érintettek, ha egyáltalán?',
+    'q.rails.o1': 'Solana (Solana Pay, SPL tokenek)',
+    'q.rails.o2': 'Ethereum vagy egy L2 (stablecoin-utalások, okosszerződések)',
+    'q.rails.o3': 'Ügynökök közötti stablecoin-fizetés (x402 / AP2 / gépi fizetés)',
+    'q.rails.o4': 'Nincs blockchain — ez lánc nélküli automatizálás',
+    'q.rails.o5': 'Még nem tudom',
+    'q.jurisdiction.label': 'Hol vannak a felhasználói, jellemzően?',
+    'q.jurisdiction.hint': 'Szinte kizárólag ez dönti el, milyen szabályok vonatkoznak Önre.',
+    'q.jurisdiction.o1': 'EU / EGT',
+    'q.jurisdiction.o2': 'Egyesült Királyság',
+    'q.jurisdiction.o3': 'Egyesült Államok',
+    'q.jurisdiction.o4': 'A világ többi része',
+    'q.jurisdiction.o5': 'Vegyes / még nem dőlt el',
+    'q.users.label': 'Ki használja majd a napi működésben?',
+    'q.users.ph': 'pl. kereskedők, akik vásárlókat szolgálnak ki; egy belső ops-csapat; más AI-ügynökök',
+    'q.stack.label': 'Hogy néz ki a jelenlegi rendszere?',
+    'q.stack.o1': 'Főleg Microsoft / Power Platform',
+    'q.stack.o2': 'Egyedi webes stack (React, Node stb.)',
+    'q.stack.o3': 'Nincs meglévő rendszer — nulláról indulunk',
+    'q.stack.o4': 'Még nem tudom',
+    'q.extra.label': 'Van még bármi, amit tudni érdemes?',
+    'q.extra.hint': 'Költségkeret, határidő, egy korlát, amiről már tud. Nem kötelező.',
+    'q.extra.ph': 'Nem kötelező'
+  };
+
+  // English strings for the parts that render themselves and so have no
+  // element for the runtime to read.
+  var EN = {
+    'lang.switchLabel': 'Language',
+    'lang.to.en': 'Switch to English',
+    'lang.to.hu': 'Switch to Hungarian',
+    'wiz.progress': 'Question {n} of {total}',
+    'wiz.next': 'Next',
+    'wiz.pay': 'Continue to payment — €190',
+    'wiz.validate': 'Pick an answer or write a line before moving on.',
+    'wiz.errCheckout': 'Could not open checkout right now ({msg}). Please try again, or email marton.thuroczy@ledgerworkshu.com directly.',
+    'wiz.errNoUrl': 'No checkout URL returned',
+    'wiz.errStart': 'Could not start checkout ({status})',
+    'wiz.errRequest': 'Request failed ({status})',
+    'wiz.errGenerate': 'Could not generate the brief ({msg}). If you were charged, email marton.thuroczy@ledgerworkshu.com with your payment confirmation and I\'ll send it manually.',
+    'wiz.truncated': 'This brief was cut short at the length limit. Email marton.thuroczy@ledgerworkshu.com and I will send the full version.',
+    'form.sending': 'Opening your email client to send this.',
+
+    'q.idea.label': 'What are you trying to build?',
+    'q.idea.hint': 'One or two sentences — the thing itself, not the tech stack.',
+    'q.idea.ph': 'e.g. a support agent for a crypto exchange\'s onboarding flow',
+    'q.custody.label': 'Will it ever hold or move customer funds?',
+    'q.custody.hint': 'This is the single biggest factor in what you\'ll need to comply with.',
+    'q.custody.o1': 'No — it only gives information or automates internal ops',
+    'q.custody.o2': 'Yes, non-custodially — funds move wallet-to-wallet, we never hold them',
+    'q.custody.o3': 'Yes, custodially — we\'d hold or control customer funds at some point',
+    'q.custody.o4': 'Not sure yet',
+    'q.rails.label': 'Which payment rails or chains are involved, if any?',
+    'q.rails.o1': 'Solana (Solana Pay, SPL tokens)',
+    'q.rails.o2': 'Ethereum or an L2 (stablecoin transfers, smart contracts)',
+    'q.rails.o3': 'Agent-to-agent stablecoin payments (x402 / AP2 / machine payments)',
+    'q.rails.o4': 'No blockchain rails — this is off-chain automation',
+    'q.rails.o5': 'Not sure yet',
+    'q.jurisdiction.label': 'Where are your users, mainly?',
+    'q.jurisdiction.hint': 'Which rules apply to you depends almost entirely on this.',
+    'q.jurisdiction.o1': 'EU / EEA',
+    'q.jurisdiction.o2': 'UK',
+    'q.jurisdiction.o3': 'US',
+    'q.jurisdiction.o4': 'Rest of world',
+    'q.jurisdiction.o5': 'Mixed / not decided',
+    'q.users.label': 'Who uses it day to day?',
+    'q.users.ph': 'e.g. merchants checking out customers, an internal ops team, other AI agents',
+    'q.stack.label': 'What does your current stack look like?',
+    'q.stack.o1': 'Mostly Microsoft/Power Platform',
+    'q.stack.o2': 'Custom web stack (React, Node, etc.)',
+    'q.stack.o3': 'No existing stack — starting from scratch',
+    'q.stack.o4': 'Not sure yet',
+    'q.extra.label': 'Anything else worth knowing?',
+    'q.extra.hint': 'Budget ceiling, timeline, a constraint you already know about. Optional.',
+    'q.extra.ph': 'Optional'
+  };
+
+  var i18n = LWI18n.init({
+    default: 'en',
+    strings: { en: EN, hu: HU },
+    meta: {
+      hu: {
+        title: 'Ledgerworks — AI-ügynökök crypto- és fintech-működésre',
+        description: 'AI-ügynökök a crypto- és fintech-működés azon részeire, amiket senki nem akar bemutatni — ügyfélszolgálat, működés-automatizálás, MiCA/KYC megfelelőségi triázs. Letétkezelés nélkül, őszintén dokumentálva.',
+        locale: 'hu_HU'
+      }
+    },
+    onChange: function () { if (window.__lwRerender) window.__lwRerender(); }
+  });
+  var t = function (k, v) { return i18n.t(k, v); };
+
+  // ---- build request form ------------------------------------------------
   document.getElementById('demo-form').addEventListener('submit', function (e) {
     e.preventDefault();
     var name = document.getElementById('f-name').value.trim();
@@ -605,95 +848,41 @@
     window.location.href = href;
 
     var status = document.getElementById('form-status');
-    status.textContent = 'Opening your email client to send this.';
+    status.textContent = t('form.sending');
     status.classList.add('ok');
   });
-</script>
 
-<script>
-(function () {
-  // ---- Automated build brief wizard ----
-  var questions = [
-    {
-      id: 'idea',
-      type: 'text',
-      label: 'What are you trying to build?',
-      hint: 'One or two sentences — the thing itself, not the tech stack.',
-      placeholder: 'e.g. a support agent for a crypto exchange\'s onboarding flow'
-    },
-    {
-      id: 'custody',
-      type: 'choice',
-      label: 'Will it ever hold or move customer funds?',
-      hint: 'This is the single biggest factor in what you\'ll need to comply with.',
-      options: [
-        'No — it only gives information or automates internal ops',
-        'Yes, non-custodially — funds move wallet-to-wallet, we never hold them',
-        'Yes, custodially — we\'d hold or control customer funds at some point',
-        'Not sure yet'
-      ]
-    },
-    {
-      id: 'rails',
-      type: 'choice',
-      label: 'Which payment rails or chains are involved, if any?',
-      options: [
-        'Solana (Solana Pay, SPL tokens)',
-        'Ethereum or an L2 (stablecoin transfers, smart contracts)',
-        'Agent-to-agent stablecoin payments (x402 / AP2 / machine payments)',
-        'No blockchain rails — this is off-chain automation',
-        'Not sure yet'
-      ]
-    },
-    {
-      id: 'jurisdiction',
-      type: 'choice',
-      label: 'Where are your users, mainly?',
-      hint: 'Which rules apply to you depends almost entirely on this.',
-      options: [
-        'EU / EEA',
-        'UK',
-        'US',
-        'Rest of world',
-        'Mixed / not decided'
-      ]
-    },
-    {
-      id: 'users',
-      type: 'text',
-      label: 'Who uses it day to day?',
-      placeholder: 'e.g. merchants checking out customers, an internal ops team, other AI agents'
-    },
-    {
-      id: 'stack',
-      type: 'choice',
-      label: 'What does your current stack look like?',
-      options: [
-        'Mostly Microsoft/Power Platform',
-        'Custom web stack (React, Node, etc.)',
-        'No existing stack — starting from scratch',
-        'Not sure yet'
-      ]
-    },
-    {
-      id: 'extra',
-      type: 'text',
-      label: 'Anything else worth knowing?',
-      hint: 'Budget ceiling, timeline, a constraint you already know about. Optional.',
-      placeholder: 'Optional',
-      optional: true
-    }
-  ];
+  // ---- Automated build brief wizard --------------------------------------
+  function buildQuestions() {
+    return [
+      { id: 'idea', type: 'text', label: t('q.idea.label'), hint: t('q.idea.hint'), placeholder: t('q.idea.ph') },
+      { id: 'custody', type: 'choice', label: t('q.custody.label'), hint: t('q.custody.hint'),
+        options: [t('q.custody.o1'), t('q.custody.o2'), t('q.custody.o3'), t('q.custody.o4')] },
+      { id: 'rails', type: 'choice', label: t('q.rails.label'),
+        options: [t('q.rails.o1'), t('q.rails.o2'), t('q.rails.o3'), t('q.rails.o4'), t('q.rails.o5')] },
+      { id: 'jurisdiction', type: 'choice', label: t('q.jurisdiction.label'), hint: t('q.jurisdiction.hint'),
+        options: [t('q.jurisdiction.o1'), t('q.jurisdiction.o2'), t('q.jurisdiction.o3'), t('q.jurisdiction.o4'), t('q.jurisdiction.o5')] },
+      { id: 'users', type: 'text', label: t('q.users.label'), placeholder: t('q.users.ph') },
+      { id: 'stack', type: 'choice', label: t('q.stack.label'),
+        options: [t('q.stack.o1'), t('q.stack.o2'), t('q.stack.o3'), t('q.stack.o4')] },
+      { id: 'extra', type: 'text', label: t('q.extra.label'), hint: t('q.extra.hint'), placeholder: t('q.extra.ph'), optional: true }
+    ];
+  }
 
   var STORAGE_KEY = 'ledgerworks_brief_answers';
+  var questions = buildQuestions();
   var answers = {};
+  // Choice answers are remembered by position as well as by text. The text is
+  // what the agent receives, but it changes when the language does — the index
+  // is what survives a switch mid-wizard.
+  var picked = {};
   var current = 0;
 
-  var savedAnswers = null;
   try {
-    savedAnswers = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || 'null');
-  } catch (e) { savedAnswers = null; }
-  if (savedAnswers) answers = savedAnswers;
+    var saved = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || 'null');
+    if (saved && saved.answers) { answers = saved.answers; picked = saved.picked || {}; }
+    else if (saved) { answers = saved; }   // older shape, before picked existed
+  } catch (e) {}
 
   var host = document.getElementById('brief-question-host');
   var progress = document.getElementById('brief-progress');
@@ -710,44 +899,71 @@
 
   function renderQuestion() {
     var q = questions[current];
-    progress.textContent = 'Question ' + (current + 1) + ' of ' + questions.length;
-    var html = '<p class="brief-question">' + q.label + '</p>';
-    if (q.hint) html += '<p class="brief-hint">' + q.hint + '</p>';
+    progress.textContent = t('wiz.progress', { n: current + 1, total: questions.length });
+    host.textContent = '';
+
+    var labelEl = document.createElement('p');
+    labelEl.className = 'brief-question';
+    labelEl.textContent = q.label;
+    host.appendChild(labelEl);
+
+    if (q.hint) {
+      var hintEl = document.createElement('p');
+      hintEl.className = 'brief-hint';
+      hintEl.textContent = q.hint;
+      host.appendChild(hintEl);
+    }
 
     if (q.type === 'text') {
-      var val = answers[q.id] || '';
-      html += '<textarea id="brief-input-' + q.id + '" placeholder="' + (q.placeholder || '') + '">' + val + '</textarea>';
-      host.innerHTML = html;
-      document.getElementById('brief-input-' + q.id).addEventListener('input', function (e) {
-        answers[q.id] = e.target.value;
-      });
+      var ta = document.createElement('textarea');
+      ta.placeholder = q.placeholder || '';
+      ta.value = answers[q.id] || '';
+      ta.addEventListener('input', function (e) { answers[q.id] = e.target.value; });
+      host.appendChild(ta);
     } else {
-      html += '<div class="choice-group">';
-      q.options.forEach(function (opt, i) {
-        var checked = answers[q.id] === opt ? ' selected' : '';
-        html += '<label class="choice-option' + checked + '" data-value="' + i + '">' +
-                '<input type="radio" name="brief-' + q.id + '"> ' + opt + '</label>';
-      });
-      html += '</div>';
-      host.innerHTML = html;
-      var opts = host.querySelectorAll('.choice-option');
-      opts.forEach(function (el) {
-        el.addEventListener('click', function () {
-          opts.forEach(function (o) { o.classList.remove('selected'); });
-          el.classList.add('selected');
-          answers[q.id] = q.options[parseInt(el.getAttribute('data-value'), 10)];
+      var group = document.createElement('div');
+      group.className = 'choice-group';
+      q.options.forEach(function (opt, idx) {
+        var label = document.createElement('label');
+        label.className = 'choice-option' + (picked[q.id] === idx ? ' selected' : '');
+        var radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = 'brief-' + q.id;
+        label.appendChild(radio);
+        label.appendChild(document.createTextNode(' ' + opt));
+        label.addEventListener('click', function () {
+          group.querySelectorAll('.choice-option').forEach(function (o) { o.classList.remove('selected'); });
+          label.classList.add('selected');
+          picked[q.id] = idx;
+          answers[q.id] = opt;
         });
+        group.appendChild(label);
       });
+      host.appendChild(group);
     }
 
     backBtn.style.visibility = current === 0 ? 'hidden' : 'visible';
-    nextBtn.textContent = current === questions.length - 1 ? 'Continue to payment — €190' : 'Next';
+    nextBtn.textContent = current === questions.length - 1 ? t('wiz.pay') : t('wiz.next');
   }
+
+  // Called by the i18n runtime after a language switch.
+  window.__lwRerender = function () {
+    questions = buildQuestions();
+    // Re-state every choice answer in the new language so what reaches the
+    // agent matches what the buyer last saw on screen.
+    questions.forEach(function (q) {
+      if (q.type === 'choice' && typeof picked[q.id] === 'number') {
+        answers[q.id] = q.options[picked[q.id]];
+      }
+    });
+    if (host) renderQuestion();
+  };
 
   function currentAnswered() {
     var q = questions[current];
     if (q.optional) return true;
-    return !!(answers[q.id] && answers[q.id].trim && answers[q.id].trim().length > 0 || answers[q.id]);
+    var v = answers[q.id];
+    return typeof v === 'string' && v.trim().length > 0;
   }
 
   backBtn.addEventListener('click', function () {
@@ -755,20 +971,15 @@
   });
 
   nextBtn.addEventListener('click', function () {
-    if (!currentAnswered()) {
-      alert('Pick an answer or write a line before moving on.');
-      return;
-    }
-    if (current < questions.length - 1) {
-      current += 1;
-      renderQuestion();
-    } else {
-      goToCheckout();
-    }
+    if (!currentAnswered()) { alert(t('wiz.validate')); return; }
+    if (current < questions.length - 1) { current += 1; renderQuestion(); }
+    else { goToCheckout(); }
   });
 
   function saveAnswers() {
-    try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(answers)); } catch (e) {}
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ answers: answers, picked: picked }));
+    } catch (e) {}
   }
 
   function goToCheckout() {
@@ -780,21 +991,21 @@
     fetch('/api/create-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ answers: answers })
+      body: JSON.stringify({ answers: answers, lang: i18n.lang })
     })
       .then(function (res) {
-        if (!res.ok) throw new Error('Could not start checkout (' + res.status + ')');
+        if (!res.ok) throw new Error(t('wiz.errStart', { status: res.status }));
         return res.json();
       })
       .then(function (data) {
-        if (!data.url) throw new Error('No checkout URL returned');
+        if (!data.url) throw new Error(t('wiz.errNoUrl'));
         window.location.href = data.url; // hands off to Stripe's hosted page
       })
       .catch(function (err) {
         checkoutLoadingEl.style.display = 'none';
         wizard.style.display = 'block';
         errorEl.style.display = 'block';
-        errorEl.textContent = 'Could not open checkout right now (' + err.message + '). Please try again, or email marton.thuroczy@ledgerworkshu.com directly.';
+        errorEl.textContent = t('wiz.errCheckout', { msg: err.message });
       });
   }
 
@@ -806,11 +1017,11 @@
     fetch('/api/brief', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ answers: answers, sessionId: sessionId })
+      body: JSON.stringify({ answers: answers, sessionId: sessionId, lang: i18n.lang })
     })
       .then(function (res) {
         return res.json().then(function (data) {
-          if (!res.ok) throw new Error(data.error || ('Request failed (' + res.status + ')'));
+          if (!res.ok) throw new Error(data.error || t('wiz.errRequest', { status: res.status }));
           return data;
         });
       })
@@ -820,7 +1031,7 @@
         resultEl.style.display = 'block';
         if (data.truncated) {
           errorEl.style.display = 'block';
-          errorEl.textContent = 'This brief was cut short at the length limit. Email marton.thuroczy@ledgerworkshu.com and I will send the full version.';
+          errorEl.textContent = t('wiz.truncated');
         }
         try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) {}
       })
@@ -828,25 +1039,23 @@
         loadingEl.style.display = 'none';
         wizard.style.display = 'block';
         errorEl.style.display = 'block';
-        errorEl.textContent = 'Could not generate the brief (' + err.message + '). If you were charged, email marton.thuroczy@ledgerworkshu.com with your payment confirmation and I\'ll send it manually.';
+        errorEl.textContent = t('wiz.errGenerate', { msg: err.message });
       });
   }
 
-  // Handle return from Stripe Checkout (success or cancel)
+  // Handle return from Stripe Checkout (success or cancel). The language
+  // param is preserved so the buyer comes back to the page they left.
   (function handleCheckoutReturn() {
     var params = new URLSearchParams(window.location.search);
     var sessionId = params.get('session_id');
     var cancelled = params.get('checkout') === 'cancelled';
+    if (!sessionId && !cancelled) return;
 
-    if (sessionId) {
-      window.history.replaceState({}, '', window.location.pathname + '#brief');
-      generateBrief(sessionId);
-      return;
-    }
-    if (cancelled) {
-      window.history.replaceState({}, '', window.location.pathname + '#brief');
-      cancelledEl.style.display = 'block';
-    }
+    var keep = i18n.lang === 'en' ? '' : '?lang=' + i18n.lang;
+    window.history.replaceState({}, '', window.location.pathname + keep + '#brief');
+
+    if (sessionId) generateBrief(sessionId);
+    else cancelledEl.style.display = 'block';
   })();
 
   downloadBtn.addEventListener('click', function () {
@@ -864,6 +1073,7 @@
   renderQuestion();
 })();
 </script>
+
 
 </body>
 </html>

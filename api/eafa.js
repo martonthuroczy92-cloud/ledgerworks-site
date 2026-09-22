@@ -154,6 +154,18 @@ Egy-két mondat: a Ledgerworks eÁFA-előrepülés (a NAV Online Számla
 adatainak és a könyvelésnek a tételszintű összevetése, csak olvasási
 jogosultsággal) az az opció, ha nem kézzel akarja végigvinni.`;
 
+// The prompt is authored in Hungarian because the subject matter is. An
+// English reader gets the same rules with a translation instruction appended,
+// so the dated regulatory facts live in exactly one place.
+const OUTPUT_LANGUAGE = {
+  en: '\n\n## A kimenet nyelve\n\nAz olvasó angolul dolgozik — jellemzően egy külföldi ' +
+      'tulajdonú magyar cég pénzügyi vezetője. A teljes diagnózist ANGOLUL írd, a fejezetcímeket ' +
+      'is. A magyar jogszabályi és rendszerneveket hagyd meg eredeti formájukban, zárójeles angol ' +
+      'magyarázattal az első előfordulásnál (például: "ÁNYK (the legacy return-filing client)", ' +
+      '"eÁFA", "nyugtaadat-szolgáltatás (receipt data reporting)"). A fenti szabályok ' +
+      'mindegyike változatlanul érvényes.'
+};
+
 function buildUserMessage(a) {
   const f = (label, v) => label + ': ' + (v && v.length ? v : 'nincs megadva');
   return '<adatlap>\n' + [
@@ -186,7 +198,8 @@ module.exports = async function handler(req, res) {
     gate = await claimPaidSession({
       sessionId: req.body && req.body.sessionId,
       product: PRODUCT,
-      fallbackAnswers: req.body && req.body.answers
+      fallbackAnswers: req.body && req.body.answers,
+      fallbackLang: req.body && req.body.lang
     });
   } catch (err) {
     console.error('eafa.js gate error:', err);
@@ -202,7 +215,7 @@ module.exports = async function handler(req, res) {
   try {
     const out = await generate({
       apiKey, model: MODEL, maxTokens: MAX_TOKENS,
-      system: SYSTEM_PROMPT,
+      system: SYSTEM_PROMPT + (OUTPUT_LANGUAGE[gate.lang] || ''),
       user: buildUserMessage(gate.answers)
     });
     await gate.settle();

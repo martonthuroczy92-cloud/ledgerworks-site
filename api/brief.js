@@ -137,6 +137,16 @@ function buildUserMessage(a) {
   ].join('\n') + '\n</intake>';
 }
 
+// The prompt is authored in English. Rather than maintain a second copy of a
+// hundred lines of regulatory guidance, a non-native language is requested as
+// an instruction appended to it — the rules stay in one place and cannot drift.
+const OUTPUT_LANGUAGE = {
+  hu: '\n\n## Output language\n\nThe reader is Hungarian. Write the entire brief in Hungarian, ' +
+      'including every section heading. Keep technical and regulatory terms that have no settled ' +
+      'Hungarian form (MiCA, CASP, stablecoin, x402, non-custodial) in their original form. ' +
+      'Every rule above still applies.'
+};
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
@@ -155,7 +165,8 @@ module.exports = async function handler(req, res) {
     gate = await claimPaidSession({
       sessionId: req.body && req.body.sessionId,
       product: PRODUCT,
-      fallbackAnswers: req.body && req.body.answers
+      fallbackAnswers: req.body && req.body.answers,
+      fallbackLang: req.body && req.body.lang
     });
   } catch (err) {
     console.error('brief.js gate error:', err);
@@ -171,7 +182,7 @@ module.exports = async function handler(req, res) {
   try {
     const out = await generate({
       apiKey, model: MODEL, maxTokens: MAX_TOKENS,
-      system: SYSTEM_PROMPT,
+      system: SYSTEM_PROMPT + (OUTPUT_LANGUAGE[gate.lang] || ''),
       user: buildUserMessage(gate.answers)
     });
     await gate.settle();

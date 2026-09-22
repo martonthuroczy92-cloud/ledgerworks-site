@@ -327,3 +327,30 @@
     .price-actions .btn { flex: 1; }
     nav { gap: 16px; }
   }
+
+  /* ---- language switch ---- */
+  .lang-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.03em;
+  }
+  .lang-opt {
+    text-decoration: none;
+    color: var(--ink-soft);
+    padding: 2px 1px;
+    border-bottom: 1px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .lang-opt:hover, .lang-opt:focus-visible { color: var(--ink); }
+  .lang-opt.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .lang-sep { color: var(--rule); }
+
+  /* The header is a single flex row; adding the language switch pushes it past
+     a phone's width, so let it wrap onto a second line instead of scrolling. */
+  @media (max-width: 620px) {
+    header .wrap { flex-wrap: wrap; row-gap: 12px; }
+    nav { flex-wrap: wrap; gap: 8px 16px; }
+  }

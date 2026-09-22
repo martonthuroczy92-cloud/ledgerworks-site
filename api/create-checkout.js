@@ -14,7 +14,7 @@
 // Env vars recommended: Vercel KV (answer storage + replay protection)
 
 const {
-  getProduct, makeStripe, baseUrl, kv, sanitizeAnswers
+  getProduct, makeStripe, baseUrl, kv, sanitizeAnswers, sanitizeLang
 } = require('./_shared');
 
 module.exports = async function handler(req, res) {
@@ -66,6 +66,8 @@ module.exports = async function handler(req, res) {
         // Expires well after the Checkout Session itself (Stripe sessions
         // expire in 24h), so there's no orphaned data sitting around.
         await kv.set(product.kvPrefix + 'answers:' + session.id, answers, { ex: 60 * 60 * 48 });
+        const lang = sanitizeLang(req.body && req.body.lang);
+        if (lang) await kv.set(product.kvPrefix + 'lang:' + session.id, lang, { ex: 60 * 60 * 48 });
       } catch (err) {
         console.error('KV answer store failed:', err);
         // Fall through — the generator falls back to client-supplied answers.

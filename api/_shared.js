@@ -28,6 +28,7 @@ const PRODUCTS = {
     successPath: '/?session_id={CHECKOUT_SESSION_ID}#brief',
     cancelPath: '/?checkout=cancelled#brief',
     kvPrefix: 'brief_',
+    defaultLang: 'en',
     requiredField: 'idea',
     limits: {
       idea: 1200, custody: 200, rails: 200, jurisdiction: 200,
@@ -45,6 +46,7 @@ const PRODUCTS = {
     successPath: '/eafa?session_id={CHECKOUT_SESSION_ID}#diagnozis',
     cancelPath: '/eafa?checkout=cancelled#diagnozis',
     kvPrefix: 'eafa_',
+    defaultLang: 'hu',
     requiredField: 'tevekenyseg',
     limits: {
       tevekenyseg: 1200, bevallas: 120, kimeno: 120, bejovo: 120,
@@ -52,6 +54,15 @@ const PRODUCTS = {
     }
   }
 };
+
+// The UI language the buyer was reading when they paid. It decides which
+// language the generated document comes back in, so it is carried through
+// checkout rather than re-asserted by the browser afterwards.
+const LANGS = ['en', 'hu'];
+
+function sanitizeLang(v) {
+  return LANGS.indexOf(v) !== -1 ? v : null;
+}
 
 function getProduct(id) {
   // Default to 'brief' so the live page, which posts no product field, is
@@ -117,7 +128,7 @@ function sanitizeAnswers(raw, limits) {
 //   { ok: true, answers, claimed, release } — go ahead
 // `code` is a stable symbol the caller maps to a message in its own language,
 // which is why this helper returns codes rather than prose.
-async function claimPaidSession({ sessionId, product, fallbackAnswers }) {
+async function claimPaidSession({ sessionId, product, fallbackAnswers, fallbackLang }) {
   if (typeof sessionId !== 'string' || !/^cs_[A-Za-z0-9_]{10,200}$/.test(sessionId)) {
     return { ok: false, status: 402, code: 'payment_required' };
   }
@@ -183,7 +194,16 @@ async function claimPaidSession({ sessionId, product, fallbackAnswers }) {
     return { ok: false, status: 400, code: 'answers_lost' };
   }
 
-  return { ok: true, answers, release, settle };
+  // Prefer the language recorded at checkout: it is the one the buyer was
+  // reading when they paid, and unlike the request body it cannot have been
+  // changed since.
+  let lang = null;
+  if (kv) {
+    try { lang = sanitizeLang(await kv.get(product.kvPrefix + 'lang:' + sessionId)); } catch (e) { lang = null; }
+  }
+  if (!lang) lang = sanitizeLang(fallbackLang) || product.defaultLang;
+
+  return { ok: true, answers, lang, release, settle };
 }
 
 // ---------------------------------------------------------------------------
@@ -234,6 +254,6 @@ async function generate({ apiKey, model, maxTokens, system, user }) {
 }
 
 module.exports = {
-  PRODUCTS, getProduct, BRIEF_PRICE_CENTS, BRIEF_CURRENCY,
+  PRODUCTS, getProduct, LANGS, sanitizeLang, BRIEF_PRICE_CENTS, BRIEF_CURRENCY,
   makeStripe, baseUrl, kv, sanitizeAnswers, claimPaidSession, generate
 };
