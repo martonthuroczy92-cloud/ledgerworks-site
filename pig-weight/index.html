@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Pig Weight Estimator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  /* Layout: a two-pane workbench. Media + marking canvas on the left, live estimate on the right; stacks on phones. */
+  :root {
+    --bg: #F2F4F1;
+    --panel: #FFFFFF;
+    --ink: #1D2420;
+    --ink-soft: #5A665F;
+    --rule: #D5DBD5;
+    --accent: #A8405F;
+    --accent-ink: #FFF5F8;
+    --ref: #C98A0B;
+    --len: #2F6FB3;
+    --cross: #2E8A55;
+    --warn: #B5531B;
+    --font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+    --font-body: 'Barlow', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141816; --panel: #1C211E; --ink: #E7ECE8; --ink-soft: #9AA79F; --rule: #313A35;
+      --accent: #EC8AAA; --accent-ink: #2A0F19; --ref: #E8AE3A; --len: #6EA8E8; --cross: #5CC489; --warn: #F0965E;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #141816; --panel: #1C211E; --ink: #E7ECE8; --ink-soft: #9AA79F; --rule: #313A35;
+    --accent: #EC8AAA; --accent-ink: #2A0F19; --ref: #E8AE3A; --len: #6EA8E8; --cross: #5CC489; --warn: #F0965E;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; margin: 0; }
+  .wrap { max-width: 1240px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 48px; display: grid; gap: 20px; }
+  header h1 { font-family: var(--font-display); font-size: 2.2rem; line-height: 1.05; margin: 0; letter-spacing: .01em; text-wrap: balance; }
+  header p { margin: 6px 0 0; color: var(--ink-soft); max-width: 68ch; }
+  .formula { font-family: var(--font-mono); font-size: .85rem; background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 2px 8px; white-space: nowrap; }
+  .grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; align-items: start; }
+  @media (max-width: 900px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+  .pane { background: var(--panel); border: 1px solid var(--rule); border-radius: 10px; padding: 16px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; min-width: 0; }
+  h2 { font-family: var(--font-display); font-size: 1.25rem; margin: 0; letter-spacing: .02em; text-transform: uppercase; }
+  .label { font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-soft); font-weight: 600; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  button, .filebtn { font: 600 .9rem var(--font-body); border: 1px solid var(--rule); background: var(--bg); color: var(--ink); border-radius: 6px; padding: 7px 12px; cursor: pointer; }
+  button:hover, .filebtn:hover { border-color: var(--ink-soft); }
+  button:focus-visible, .filebtn:focus-within, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button.primary, .filebtn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  button[disabled] { opacity: .45; cursor: not-allowed; }
+  .filebtn input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+  .filebtn { position: relative; display: inline-flex; }
+  input[type=number], select { font: 500 .9rem var(--font-mono); background: var(--bg); color: var(--ink); border: 1px solid var(--rule); border-radius: 6px; padding: 6px 8px; width: 7.5em; }
+  select { width: auto; font-family: var(--font-body); }
+  .tools button { display: inline-flex; align-items: center; gap: 6px; }
+  .tools button .sw { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+  .tools button[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+  .seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+  .seg button { border: 0; border-radius: 0; background: transparent; }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  video { width: 100%; max-height: 320px; background: #000; border-radius: 8px; }
+  .canvas-wrap { position: relative; border-radius: 8px; overflow: hidden; background: var(--bg); border: 1px solid var(--rule); }
+  canvas#cv { display: block; width: 100%; max-width: 100%; touch-action: none; cursor: crosshair; }
+  .strip { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+  .thumb { flex: 0 0 auto; width: 104px; border: 2px solid transparent; border-radius: 6px; background: var(--bg); padding: 0; cursor: pointer; position: relative; text-align: left; }
+  .thumb img { display: block; width: 100%; height: 64px; object-fit: cover; border-radius: 4px 4px 0 0; }
+  .thumb span { display: block; font: 500 .7rem var(--font-mono); padding: 2px 5px; color: var(--ink-soft); }
+  .thumb[aria-current="true"] { border-color: var(--accent); }
+  .thumb.done span { color: var(--cross); }
+  .thumb.off { opacity: .45; }
+  .hint { font-size: .85rem; color: var(--ink-soft); margin: 0; }
+  .big { font-family: var(--font-display); font-size: 3.4rem; line-height: 1; font-variant-numeric: tabular-nums; }
+  .big small { font-size: 1.3rem; color: var(--ink-soft); margin-left: 4px; }
+  .range { font-family: var(--font-mono); font-size: .85rem; color: var(--ink-soft); }
+  .pill { display: inline-block; font: 600 .72rem var(--font-body); text-transform: uppercase; letter-spacing: .06em; padding: 2px 8px; border-radius: 99px; border: 1px solid currentColor; }
+  .pill.good { color: var(--cross); } .pill.mid { color: var(--ref); } .pill.low { color: var(--warn); }
+  dl { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; margin: 0; font-size: .9rem; }
+  dt { color: var(--ink-soft); } dd { margin: 0; font-family: var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; }
+  .tablewrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .82rem; font-variant-numeric: tabular-nums; }
+  th, td { padding: 5px 6px; border-bottom: 1px solid var(--rule); text-align: right; white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  th { font-weight: 600; color: var(--ink-soft); font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; }
+  td { font-family: var(--font-mono); }
+  .notes { font-size: .82rem; color: var(--ink-soft); display: grid; gap: 6px; }
+  .notes p { margin: 0; }
+  .msg { font-size: .85rem; color: var(--warn); min-height: 1.2em; margin: 0; }
+  ol.steps { margin: 0; padding-left: 1.2em; font-size: .88rem; color: var(--ink-soft); display: grid; gap: 2px; }
+  ol.steps b { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>Pig Weight Estimator</h1>
+    <p>Estimate live weight from a photo or, better, a short video. Mark a reference object of known length, the body length, and the chest width or depth. The tool converts that to heart girth and applies the farm tape formula <span class="formula">weight = girth² × length ÷ 400</span> (inches → lb), here in metric as girth² × length ÷ 14,400 (cm → kg).</p>
+  </header>
+
+  <div class="grid">
+    <section class="pane" aria-labelledby="h-media">
+      <div class="row" style="justify-content:space-between">
+        <h2 id="h-media">1 · Load photos or video</h2>
+        <div class="row">
+          <label class="filebtn primary">Add photo / video<input id="file" type="file" accept="image/*,video/*" multiple></label>
+          <button id="btnSample" type="button">Load example</button>
+        </div>
+      </div>
+
+      <div id="videoBox" hidden>
+        <video id="vid" controls playsinline muted></video>
+        <div class="row" style="margin-top:8px">
+          <button id="btnGrab" type="button">Capture this frame</button>
+          <button id="btnAuto" type="button">Auto-capture</button>
+          <input id="autoN" type="number" min="2" max="30" value="8" aria-label="Number of frames to auto-capture"> <span class="hint">frames spread across the clip</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="label">Frames <span id="frameCount"></span></div>
+        <div class="strip" id="strip" role="list"></div>
+      </div>
+
+      <h2>2 · Mark the frame</h2>
+      <div class="row">
+        <span class="label">View</span>
+        <div class="seg" id="viewSeg">
+          <button type="button" data-view="top" aria-pressed="true">Top (from above)</button>
+          <button type="button" data-view="side" aria-pressed="false">Side</button>
+        </div>
+        <label class="row" style="gap:6px"><input id="excl" type="checkbox"> Exclude this frame</label>
+      </div>
+      <div class="row tools" id="tools">
+        <button type="button" data-tool="ref" aria-pressed="true"><span class="sw" style="background:var(--ref)"></span>Reference</button>
+        <button type="button" data-tool="len" aria-pressed="false"><span class="sw" style="background:var(--len)"></span>Length: ears → tail</button>
+        <button type="button" data-tool="cross" aria-pressed="false"><span class="sw" style="background:var(--cross)"></span><span id="crossLabel">Chest width</span></button>
+        <button type="button" id="btnClear">Clear tool</button>
+      </div>
+      <p class="hint" id="toolHint"></p>
+      <div class="canvas-wrap"><canvas id="cv" width="800" height="450" aria-label="Frame to mark. Click two points per measurement; drag points to adjust."></canvas></div>
+      <ol class="steps">
+        <li><b>Reference:</b> click both ends of an object of known length lying beside the pig, at the same distance from the camera (a board, a marked stick, a feeder edge).</li>
+        <li><b>Length:</b> base of the ears to the base of the tail, along the back.</li>
+        <li><b>Chest:</b> just behind the front legs. In a top view mark the widest width; in a side view mark back to belly (depth).</li>
+      </ol>
+    </section>
+
+    <aside class="pane" aria-labelledby="h-res">
+      <h2 id="h-res">Estimate</h2>
+      <div>
+        <div class="big" id="wBig">–<small id="wUnit">kg</small></div>
+        <div class="range" id="wRange">Mark at least one frame to see an estimate.</div>
+      </div>
+      <div class="row"><span class="pill" id="conf">no data</span><span class="hint" id="confWhy"></span></div>
+      <dl id="dims"></dl>
+
+      <div class="label">Settings</div>
+      <div class="row">
+        <span>Units</span>
+        <div class="seg" id="unitSeg">
+          <button type="button" data-unit="metric" aria-pressed="true">kg · cm</button>
+          <button type="button" data-unit="imperial" aria-pressed="false">lb · in</button>
+        </div>
+      </div>
+      <label class="row">Reference length <input id="refLen" type="number" min="1" step="0.1" value="100"> <span id="refUnit">cm</span></label>
+      <label class="row">Depth ÷ width ratio <input id="ratio" type="number" min="0.6" max="2" step="0.01" value="1.10"></label>
+      <p class="hint">Only used when a frame lacks the other view. Capture both a top and a side frame to replace this assumption with a measurement.</p>
+      <label class="row">Tape-measured girth <input id="tapeG" type="number" min="0" step="0.1" placeholder="optional"> <span class="unitL">cm</span></label>
+
+      <div class="label">Calibrate against a scale</div>
+      <div class="row">
+        <input id="actual" type="number" min="1" step="0.1" placeholder="scale weight" aria-label="Actual scale weight"> <span class="unitW">kg</span>
+        <button id="btnCal" type="button">Calibrate</button>
+        <button id="btnCalReset" type="button">Reset</button>
+      </div>
+      <p class="hint" id="calInfo"></p>
+      <p class="msg" id="msg" role="status"></p>
+
+      <div class="label">Per-frame measurements</div>
+      <div class="tablewrap"><table id="tbl"><thead><tr><th>Frame</th><th>View</th><th id="thL">cm</th><th id="thX">chest</th><th id="thW">kg</th></tr></thead><tbody></tbody></table></div>
+
+      <div class="notes">
+        <p>Accuracy depends on the reference sitting in the same plane as the pig, the camera pointing straight at it, and the pig standing square. Lens distortion and a curved back make straight-line length a slight underestimate.</p>
+        <p>The tape formula is a rule of thumb for finishing pigs; it is less reliable for piglets and heavy sows. Calibrating against one scale weighing corrects systematic bias for your camera setup and breed.</p>
+        <p>Everything runs in your browser. No image leaves your device.</p>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  const $ = (s) => document.querySelector(s);
+  const KG_PER_LB = 0.45359237, CM_PER_IN = 2.54;
+  const COLORS = () => {
+    const cs = getComputedStyle(document.documentElement);
+    return { ref: cs.getPropertyValue('--ref').trim(), len: cs.getPropertyValue('--len').trim(), cross: cs.getPropertyValue('--cross').trim(), ink: cs.getPropertyValue('--ink').trim(), bg: cs.getPropertyValue('--panel').trim() };
+  };
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem('pigw.' + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+    set(k, v) { try { localStorage.setItem('pigw.' + k, JSON.stringify(v)); } catch {} }
+  };
+
+  const state = {
+    frames: [], cur: -1, tool: 'ref',
+    unit: store.get('unit', 'metric'),
+    calib: store.get('calib', 1),
+    ratio: store.get('ratio', 1.10),
+  };
+  let nextId = 1;
+
+  // ---------- geometry ----------
+  const dist = (p) => (p && p.length === 2) ? Math.hypot(p[1].x - p[0].x, p[1].y - p[0].y) : null;
+  const median = (a) => { if (!a.length) return null; const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+  // Ramanujan's approximation for the perimeter of an ellipse with full axes w and d.
+  const ellipsePerim = (w, d) => { const a = w / 2, b = d / 2; return Math.PI * (3 * (a + b) - Math.sqrt((3 * a + b) * (a + 3 * b))); };
+  // Tape formula: lb = G(in)^2 * L(in) / 400  <=>  kg ≈ G(cm)^2 * L(cm) / 14,452 (rounded to 14,400 in most guides).
+  const KG_DIVISOR = 400 * Math.pow(CM_PER_IN, 3) / KG_PER_LB;
+  const tapeKg = (gCm, lCm) => gCm * gCm * lCm / KG_DIVISOR;
+
+  function refCm() { const v = parseFloat($('#refLen').value); if (!(v > 0)) return null; return state.unit === 'metric' ? v : v * CM_PER_IN; }
+
+  function measure(f) {
+    const r = dist(f.pts.ref), rc = refCm();
+    if (!r || !rc) return null;
+    const pxPerCm = r / rc;
+    const L = dist(f.pts.len), X = dist(f.pts.cross);
+    return { L: L ? L / pxPerCm : null, X: X ? X / pxPerCm : null };
+  }
+
+  function aggregate() {
+    const used = state.frames.filter(f => !f.excluded).map(f => ({ f, m: measure(f) })).filter(o => o.m);
+    const Ls = used.map(o => o.m.L).filter(Boolean);
+    const Ws = used.filter(o => o.f.view === 'top').map(o => o.m.X).filter(Boolean);
+    const Ds = used.filter(o => o.f.view === 'side').map(o => o.m.X).filter(Boolean);
+    const ratio = state.ratio;
+    const L = median(Ls);
+    let W = median(Ws), D = median(Ds), assumed = null;
+    if (W && !D) { D = W * ratio; assumed = 'depth'; }
+    else if (D && !W) { W = D / ratio; assumed = 'width'; }
+    const tapeIn = parseFloat($('#tapeG').value);
+    const tapeG = tapeIn > 0 ? (state.unit === 'metric' ? tapeIn : tapeIn * CM_PER_IN) : null;
+    const G = tapeG || (W && D ? ellipsePerim(W, D) : null);
+    const kg = (L && G) ? tapeKg(G, L) * state.calib : null;
+
+    // Per-frame estimates: each frame's own numbers, borrowing the other dimension from the aggregate.
+    const per = used.map(({ f, m }) => {
+      let kgF = null;
+      const l = m.L || L;
+      if (l) {
+        let g = tapeG;
+        if (!g && m.X) {
+          const w = f.view === 'top' ? m.X : (median(Ws) || m.X / ratio);
+          const d = f.view === 'side' ? m.X : (median(Ds) || m.X * ratio);
+          g = ellipsePerim(w, d);
+        }
+        if (g && m.L) kgF = tapeKg(g, l) * state.calib;
+      }
+      return { f, m, kg: kgF };
+    });
+    const ks = per.map(p => p.kg).filter(Boolean);
+    return { L, W, D, G, kg, assumed, tapeG, per, ks, nTop: Ws.length, nSide: Ds.length };
+  }
+
+  // ---------- frames ----------
+  function addFrame(src, label) {
+    const img = new Image();
+    img.onload = () => {
+      const f = { id: nextId++, img, w: img.naturalWidth, h: img.naturalHeight, src, label, view: 'top', excluded: false, pts: { ref: [], len: [], cross: [] } };
+      // Carry the view and reference over from the previous frame (common in a video sweep).
+      const prev = state.frames[state.frames.length - 1];
+      if (prev) f.view = prev.view;
+      state.frames.push(f);
+      if (state.cur < 0) select(state.frames.length - 1); else renderStrip();
+      update();
+    };
+    img.src = src;
+  }
+
+  function select(i) { state.cur = i; syncFrameUI(); renderStrip(); draw(); }
+  const curF = () => state.frames[state.cur];
+
+  function renderStrip() {
+    const strip = $('#strip'); strip.innerHTML = '';
+    state.frames.forEach((f, i) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'thumb'; b.setAttribute('role', 'listitem');
+      const m = measure(f), done = m && m.L && m.X;
+      if (done) b.classList.add('done'); if (f.excluded) b.classList.add('off');
+      b.setAttribute('aria-current', i === state.cur ? 'true' : 'false');
+      b.innerHTML = `<img alt="" src="${f.src}"><span>${f.label} · ${f.view}${done ? ' ✓' : ''}</span>`;
+      b.onclick = () => select(i);
+      strip.appendChild(b);
+    });
+    $('#frameCount').textContent = state.frames.length ? `(${state.frames.length})` : '';
+  }
+
+  function syncFrameUI() {
+    const f = curF();
+    document.querySelectorAll('#viewSeg button').forEach(b => b.setAttribute('aria-pressed', String(!!f && b.dataset.view === f.view)));
+    $('#excl').checked = !!(f && f.excluded);
+    $('#crossLabel').textContent = f && f.view === 'side' ? 'Chest depth' : 'Chest width';
+    setTool(state.tool);
+  }
+
+  const HINTS = {
+    ref: 'Click both ends of the reference object. Its real length is set on the right.',
+    len: 'Click the base of the ears, then the base of the tail.',
+    cross: () => curF() && curF().view === 'side' ? 'Just behind the front legs: click the top of the back, then the bottom of the belly.' : 'Just behind the front legs: click the left and right edges of the body.'
+  };
+  function setTool(t) {
+    state.tool = t;
+    document.querySelectorAll('#tools [data-tool]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tool === t)));
+    const h = HINTS[t]; $('#toolHint').textContent = typeof h === 'function' ? h() : h;
+  }
+
+  // ---------- canvas ----------
+  const cv = $('#cv'), ctx = cv.getContext('2d');
+  let hover = null, drag = null;
+
+  function fit() {
+    const f = curF(), wrapW = cv.parentElement.clientWidth;
+    const aspect = f ? f.h / f.w : 9 / 16;
+    const cssH = Math.min(wrapW * aspect, window.innerHeight * 0.7);
+    const cssW = cssH / aspect;
+    cv.style.width = cssW + 'px'; cv.style.height = cssH + 'px'; cv.style.margin = '0 auto';
+    const dpr = window.devicePixelRatio || 1;
+    cv.width = Math.round(cssW * dpr); cv.height = Math.round(cssH * dpr);
+  }
+
+  function toImg(e) {
+    const f = curF(), r = cv.getBoundingClientRect();
+    return { x: (e.clientX - r.left) / r.width * f.w, y: (e.clientY - r.top) / r.height * f.h };
+  }
+
+  function draw() {
+    fit();
+    const f = curF(), C = COLORS();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = C.bg; ctx.fillRect(0, 0, cv.width, cv.height);
+    if (!f) {
+      ctx.fillStyle = C.ink; ctx.font = `${16 * (window.devicePixelRatio || 1)}px Barlow, sans-serif`; ctx.textAlign = 'center';
+      ctx.fillText('Add a photo or video, or load the example.', cv.width / 2, cv.height / 2);
+      return;
+    }
+    const s = cv.width / f.w, dpr = window.devicePixelRatio || 1;
+    ctx.drawImage(f.img, 0, 0, cv.width, cv.height);
+    const m = measure(f);
+    const labels = { ref: () => `${$('#refLen').value} ${state.unit === 'metric' ? 'cm' : 'in'}`, len: () => m && m.L ? fmtLen(m.L) : 'length', cross: () => m && m.X ? fmtLen(m.X) : (f.view === 'side' ? 'depth' : 'width') };
+    for (const k of ['ref', 'len', 'cross']) {
+      const p = f.pts[k]; if (!p.length) continue;
+      ctx.strokeStyle = C[k]; ctx.fillStyle = C[k]; ctx.lineWidth = 3 * dpr;
+      if (p.length === 2) {
+        ctx.beginPath(); ctx.moveTo(p[0].x * s, p[0].y * s); ctx.lineTo(p[1].x * s, p[1].y * s); ctx.stroke();
+        const mx = (p[0].x + p[1].x) / 2 * s, my = (p[0].y + p[1].y) / 2 * s, t = labels[k]();
+        ctx.font = `600 ${13 * dpr}px 'JetBrains Mono', monospace`; ctx.textAlign = 'center';
+        const tw = ctx.measureText(t).width + 10 * dpr;
+        ctx.fillStyle = 'rgba(0,0,0,.72)'; ctx.fillRect(mx - tw / 2, my - 22 * dpr, tw, 18 * dpr);
+        ctx.fillStyle = '#fff'; ctx.fillText(t, mx, my - 8 * dpr);
+        ctx.fillStyle = C[k];
+      }
+      for (const q of p) { ctx.beginPath(); ctx.arc(q.x * s, q.y * s, 6 * dpr, 0, Math.PI * 2); ctx.fill(); ctx.lineWidth = 2 * dpr; ctx.strokeStyle = '#fff'; ctx.stroke(); }
+    }
+    // Loupe: 4x magnifier in the corner away from the cursor for precise placement.
+    if (hover) {
+      const L = 130 * dpr, z = 4, srcW = L / z / s;
+      const cx = hover.x * s, onLeft = cx < cv.width / 2;
+      const lx = onLeft ? cv.width - L - 8 * dpr : 8 * dpr, ly = 8 * dpr;
+      ctx.save();
+      ctx.beginPath(); ctx.rect(lx, ly, L, L); ctx.clip();
+      ctx.fillStyle = '#000'; ctx.fillRect(lx, ly, L, L);
+      ctx.drawImage(f.img, hover.x - srcW / 2, hover.y - srcW / 2, srcW, srcW, lx, ly, L, L);
+      ctx.strokeStyle = C[state.tool]; ctx.lineWidth = 1.5 * dpr;
+      ctx.beginPath(); ctx.moveTo(lx + L / 2, ly); ctx.lineTo(lx + L / 2, ly + L); ctx.moveTo(lx, ly + L / 2); ctx.lineTo(lx + L, ly + L / 2); ctx.stroke();
+      ctx.restore();
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 2 * dpr; ctx.strokeRect(lx, ly, L, L);
+    }
+  }
+
+  function hit(p) {
+    const f = curF(), r = cv.getBoundingClientRect(), tol = 14 / r.width * f.w;
+    let best = null;
+    for (const k of ['ref', 'len', 'cross']) f.pts[k].forEach((q, i) => { const d = Math.hypot(q.x - p.x, q.y - p.y); if (d < tol && (!best || d < best.d)) best = { k, i, d }; });
+    return best;
+  }
+
+  cv.addEventListener('pointerdown', (e) => {
+    const f = curF(); if (!f) return;
+    cv.setPointerCapture(e.pointerId);
+    const p = toImg(e), h = hit(p);
+    if (h) { drag = h; setTool(h.k); return; }
+    const arr = f.pts[state.tool];
+    if (arr.length >= 2) arr.length = 0;
+    arr.push(p);
+    drag = { k: state.tool, i: arr.length - 1 };
+    // Advance to the next tool once a pair is complete.
+    if (arr.length === 2) { const order = ['ref', 'len', 'cross']; const nx = order.find(k => f.pts[k].length < 2); if (nx) setTimeout(() => setTool(nx), 0); }
+    hover = p; update();
+  });
+  cv.addEventListener('pointermove', (e) => {
+    const f = curF(); if (!f) return;
+    hover = toImg(e);
+    if (drag) { f.pts[drag.k][drag.i] = hover; update(); } else draw();
+  });
+  cv.addEventListener('pointerup', () => { drag = null; renderStrip(); });
+  cv.addEventListener('pointerleave', () => { if (!drag) { hover = null; draw(); } });
+
+  // ---------- results ----------
+  const fmtLen = (cm) => state.unit === 'metric' ? `${cm.toFixed(1)} cm` : `${(cm / CM_PER_IN).toFixed(1)} in`;
+  const num = (cm) => (state.unit === 'metric' ? cm : cm / CM_PER_IN).toFixed(1);
+  const wUnit = () => state.unit === 'metric' ? 'kg' : 'lb';
+  const fmtW = (kg) => state.unit === 'metric' ? kg.toFixed(1) : (kg / KG_PER_LB).toFixed(1);
+
+  function update() {
+    draw();
+    const a = aggregate();
+    $('#wUnit').textContent = wUnit(); $('#thW').textContent = wUnit(); $('#thL').textContent = 'len ' + (state.unit === 'metric' ? 'cm' : 'in');
+    document.querySelectorAll('.unitW').forEach(el => el.textContent = wUnit());
+    document.querySelectorAll('.unitL').forEach(el => el.textContent = state.unit === 'metric' ? 'cm' : 'in');
+    $('#refUnit').textContent = state.unit === 'metric' ? 'cm' : 'in';
+
+    const big = $('#wBig'); big.firstChild.nodeValue = a.kg ? fmtW(a.kg) : '–';
+    const conf = $('#conf'), why = $('#confWhy');
+    if (!a.kg) {
+      $('#wRange').textContent = state.frames.length ? 'Mark reference, length and chest on at least one frame.' : 'Mark at least one frame to see an estimate.';
+      conf.className = 'pill'; conf.textContent = 'no data'; why.textContent = '';
+    } else {
+      const n = a.ks.length;
+      let lo = Math.min(...a.ks), hi = Math.max(...a.ks);
+      const mean = a.ks.reduce((x, y) => x + y, 0) / n;
+      const sd = n > 1 ? Math.sqrt(a.ks.reduce((x, y) => x + (y - mean) ** 2, 0) / (n - 1)) : null;
+      const cv_ = sd ? sd / mean : null;
+      $('#wRange').textContent = n > 1 ? `Frames range ${fmtW(lo)}–${fmtW(hi)} ${wUnit()} · spread ±${(cv_ * 100).toFixed(1)}% across ${n} frames` : 'Single frame: no spread available. Add more frames from a video to tighten the estimate.';
+      const both = (a.nTop && a.nSide) || a.tapeG;
+      let level = 'low', text = 'low confidence';
+      if (n >= 3 && both && cv_ != null && cv_ < 0.06) { level = 'good'; text = 'good'; }
+      else if ((n >= 2 && cv_ != null && cv_ < 0.10) || both) { level = 'mid'; text = 'fair'; }
+      conf.className = 'pill ' + level; conf.textContent = text;
+      const reasons = [];
+      if (!both) reasons.push('chest ' + a.assumed + ' assumed from ratio');
+      if (n < 3) reasons.push('few frames');
+      if (cv_ != null && cv_ >= 0.06) reasons.push('frames disagree');
+      if (state.calib === 1) reasons.push('uncalibrated');
+      why.textContent = reasons.join(' · ');
+    }
+
+    const dims = [];
+    if (a.L) dims.push(['Body length (median)', fmtLen(a.L)]);
+    if (a.W) dims.push([`Chest width${a.assumed === 'width' ? ' (assumed)' : ''}`, fmtLen(a.W)]);
+    if (a.D) dims.push([`Chest depth${a.assumed === 'depth' ? ' (assumed)' : ''}`, fmtLen(a.D)]);
+    if (a.G) dims.push([a.tapeG ? 'Heart girth (tape)' : 'Heart girth (est.)', fmtLen(a.G)]);
+    dims.push(['Calibration factor', '×' + state.calib.toFixed(3)]);
+    $('#dims').innerHTML = dims.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
+    $('#calInfo').textContent = state.calib !== 1 ? `Calibrated: estimates are multiplied by ${state.calib.toFixed(3)}. Saved in this browser.` : 'Weigh one pig on a scale, mark its frames, enter the reading, and press Calibrate.';
+
+    const tb = $('#tbl tbody');
+    tb.innerHTML = a.per.length ? a.per.map(p => `<tr><td>${p.f.label}</td><td>${p.f.view}</td><td>${p.m.L ? num(p.m.L) : '–'}</td><td>${p.m.X ? num(p.m.X) : '–'}</td><td>${p.kg ? fmtW(p.kg) : '–'}</td></tr>`).join('') : '<tr><td colspan="5" style="text-align:left;font-family:var(--font-body)">No frame has a reference yet.</td></tr>';
+  }
+
+  // ---------- inputs ----------
+  const vid = $('#vid');
+  $('#file').addEventListener('change', (e) => {
+    for (const file of e.target.files) {
+      const url = URL.createObjectURL(file);
+      if (file.type.startsWith('video/')) { vid.src = url; $('#videoBox').hidden = false; $('#msg').textContent = ''; }
+      else addFrame(url, 'photo ' + nextId);
+    }
+    e.target.value = '';
+  });
+
+  function grab() {
+    if (!vid.videoWidth) { $('#msg').textContent = 'The video has not loaded yet. Wait a moment and try again.'; return; }
+    const c = document.createElement('canvas'); c.width = vid.videoWidth; c.height = vid.videoHeight;
+    c.getContext('2d').drawImage(vid, 0, 0);
+    addFrame(c.toDataURL('image/jpeg', 0.9), `t=${vid.currentTime.toFixed(1)}s`);
+  }
+  $('#btnGrab').onclick = grab;
+  $('#btnAuto').onclick = async () => {
+    if (!vid.duration || !isFinite(vid.duration)) { $('#msg').textContent = 'The video has not loaded yet. Wait a moment and try again.'; return; }
+    const n = Math.max(2, Math.min(30, parseInt($('#autoN').value, 10) || 8));
+    const btn = $('#btnAuto'); btn.disabled = true; vid.pause();
+    for (let i = 0; i < n; i++) {
+      const t = vid.duration * (i + 0.5) / n;
+      await new Promise(res => { const on = () => { vid.removeEventListener('seeked', on); res(); }; vid.addEventListener('seeked', on); vid.currentTime = t; });
+      grab();
+    }
+    btn.disabled = false;
+    $('#msg').textContent = `Captured ${n} frames. Mark each one and set its view; exclude blurry frames or ones where the pig is turning.`;
+  };
+
+  document.querySelectorAll('#tools [data-tool]').forEach(b => b.onclick = () => setTool(b.dataset.tool));
+  $('#btnClear').onclick = () => { const f = curF(); if (f) { f.pts[state.tool] = []; update(); renderStrip(); } };
+  document.querySelectorAll('#viewSeg button').forEach(b => b.onclick = () => { const f = curF(); if (!f) return; f.view = b.dataset.view; syncFrameUI(); renderStrip(); update(); });
+  $('#excl').onchange = (e) => { const f = curF(); if (f) { f.excluded = e.target.checked; renderStrip(); update(); } };
+
+  function setUnit(u) {
+    if (u === state.unit) return;
+    // Convert the length inputs so they keep meaning the same physical size.
+    const conv = (el) => { const v = parseFloat(el.value); if (v > 0) el.value = (u === 'metric' ? v * CM_PER_IN : v / CM_PER_IN).toFixed(1); };
+    conv($('#refLen')); conv($('#tapeG'));
+    const act = $('#actual'), av = parseFloat(act.value); if (av > 0) act.value = (u === 'metric' ? av * KG_PER_LB : av / KG_PER_LB).toFixed(1);
+    state.unit = u; store.set('unit', u);
+    document.querySelectorAll('#unitSeg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.unit === u)));
+    update();
+  }
+  document.querySelectorAll('#unitSeg button').forEach(b => b.onclick = () => setUnit(b.dataset.unit));
+  $('#refLen').oninput = update; $('#tapeG').oninput = update;
+  $('#ratio').oninput = (e) => { const v = parseFloat(e.target.value); if (v > 0) { state.ratio = v; store.set('ratio', v); update(); } };
+
+  $('#btnCal').onclick = () => {
+    const a = aggregate(), v = parseFloat($('#actual').value);
+    if (!a.kg) { $('#msg').textContent = 'Mark at least one complete frame before calibrating.'; return; }
+    if (!(v > 0)) { $('#msg').textContent = 'Enter the scale weight first.'; return; }
+    const actualKg = state.unit === 'metric' ? v : v * KG_PER_LB;
+    const raw = a.kg / state.calib;
+    const k = actualKg / raw;
+    if (k < 0.5 || k > 2) { $('#msg').textContent = `That would scale estimates by ×${k.toFixed(2)}. Check the reference length and markings before calibrating.`; return; }
+    state.calib = k; store.set('calib', k); $('#msg').textContent = ''; update();
+  };
+  $('#btnCalReset').onclick = () => { state.calib = 1; store.set('calib', 1); update(); };
+
+  window.addEventListener('resize', draw);
+  if (window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', draw);
+
+  // ---------- example ----------
+  // A drawn top-view pig beside a 100 cm board, pre-marked so the tool opens in a working state.
+  function exampleFrame(view, jitter) {
+    const c = document.createElement('canvas'); c.width = 1200; c.height = 700;
+    const g = c.getContext('2d');
+    g.fillStyle = '#8C9A7E'; g.fillRect(0, 0, 1200, 700);
+    for (let i = 0; i < 400; i++) { g.fillStyle = `rgba(60,70,50,${Math.random() * .25})`; g.fillRect(Math.random() * 1200, Math.random() * 700, 3, 3); }
+    // board: 100 cm = 500 px  =>  5 px/cm
+    g.fillStyle = '#C8A26A'; g.fillRect(150, 600, 500, 26); g.fillStyle = '#5a4022';
+    for (let i = 0; i <= 10; i++) g.fillRect(150 + i * 50 - 1, 600, 2, i % 5 ? 10 : 26);
+    g.fillStyle = '#E9B8B3'; g.strokeStyle = '#B9837E'; g.lineWidth = 4;
+    if (view === 'top') {
+      g.beginPath(); g.ellipse(600, 320, 290, 92, 0, 0, Math.PI * 2); g.fill(); g.stroke();
+      g.beginPath(); g.ellipse(905, 320, 70, 55, 0, 0, Math.PI * 2); g.fill(); g.stroke();
+      g.beginPath(); g.ellipse(930, 268, 26, 18, -.6, 0, Math.PI * 2); g.ellipse(930, 372, 26, 18, .6, 0, Math.PI * 2); g.fill();
+    } else {
+      g.beginPath(); g.ellipse(600, 330, 290, 105, 0, 0, Math.PI * 2); g.fill(); g.stroke();
+      g.beginPath(); g.ellipse(905, 300, 72, 60, 0, 0, Math.PI * 2); g.fill(); g.stroke();
+      g.fillStyle = '#D9A29C'; for (const x of [420, 480, 720, 780]) g.fillRect(x, 410, 30, 120);
+    }
+    const j = () => (Math.random() - .5) * jitter;
+    const pts = view === 'top'
+      ? { ref: [{ x: 150, y: 613 }, { x: 650, y: 613 }], len: [{ x: 860 + j(), y: 320 }, { x: 312 + j(), y: 320 }], cross: [{ x: 760, y: 235 + j() }, { x: 760, y: 405 + j() }] }
+      : { ref: [{ x: 150, y: 613 }, { x: 650, y: 613 }], len: [{ x: 860 + j(), y: 255 }, { x: 312 + j(), y: 300 }], cross: [{ x: 760, y: 238 + j() }, { x: 760, y: 428 + j() }] };
+    return { src: c.toDataURL('image/jpeg', .85), pts };
+  }
+  function loadExample() {
+    state.frames = []; state.cur = -1;
+    if (state.unit !== 'metric') setUnit('metric');
+    $('#refLen').value = 100;
+    const specs = [['top', 'example A'], ['top', 'example B'], ['side', 'example C'], ['top', 'example D']];
+    let loaded = 0;
+    specs.forEach(([view, label], i) => {
+      const ex = exampleFrame(view, 14);
+      const img = new Image();
+      img.onload = () => {
+        state.frames[i] = { id: nextId++, img, w: img.naturalWidth, h: img.naturalHeight, src: ex.src, label, view, excluded: false, pts: ex.pts };
+        if (++loaded === specs.length) { select(0); update(); $('#msg').textContent = 'Example loaded: drawn pig, 100 cm board. Drag any point to see the estimate change.'; }
+      };
+      img.src = ex.src;
+    });
+  }
+  $('#btnSample').onclick = loadExample;
+
+  // init
+  $('#ratio').value = state.ratio.toFixed(2);
+  if (state.unit !== 'metric') { const u = state.unit; state.unit = 'metric'; setUnit(u); }
+  setTool('ref');
+  loadExample();
+})();
+</script>
+</body>
+</html>
