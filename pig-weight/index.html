@@ -55,7 +55,8 @@
   button:focus-visible, .filebtn:focus-within, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   button.primary, .filebtn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
   button[disabled] { opacity: .45; cursor: not-allowed; }
-  .filebtn input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+  .filebtn input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; font-size: 0; }
+  body.dragging .canvas-wrap { outline: 3px dashed var(--accent); outline-offset: -3px; }
   .filebtn { position: relative; display: inline-flex; }
   input[type=number], select { font: 500 .9rem var(--font-mono); background: var(--bg); color: var(--ink); border: 1px solid var(--rule); border-radius: 6px; padding: 6px 8px; width: 7.5em; }
   select { width: auto; font-family: var(--font-body); }
@@ -144,6 +145,7 @@
         <button type="button" id="btnClear">Clear tool</button>
       </div>
       <p class="hint" id="toolHint"></p>
+      <p class="hint">You can also drag files onto the page or paste an image. If the button does nothing in the Claude app, open this page in your phone or computer browser.</p>
       <div class="canvas-wrap"><canvas id="cv" width="800" height="450" aria-label="Frame to mark. Click two points per measurement; drag points to adjust."></canvas></div>
       <ol class="steps">
         <li><b>Reference:</b> click both ends of an object of known length lying beside the pig, at the same distance from the camera (a board, a marked stick, a feeder edge).</li>
@@ -271,15 +273,21 @@
   }
 
   // ---------- frames ----------
-  function addFrame(src, label) {
+  function clearExample() {
+    if (state.frames.length && state.frames.every(f => f.example)) { state.frames = []; state.cur = -1; }
+  }
+  function addFrame(src, label, focus = true) {
     const img = new Image();
+    img.onerror = () => { $('#msg').textContent = `Could not open ${label}. iPhone HEIC photos and some RAW files do not open in this browser: export or share the photo as JPEG and try again.`; };
     img.onload = () => {
+      clearExample();
       const f = { id: nextId++, img, w: img.naturalWidth, h: img.naturalHeight, src, label, view: 'top', excluded: false, pts: { ref: [], len: [], cross: [] } };
       // Carry the view and reference over from the previous frame (common in a video sweep).
       const prev = state.frames[state.frames.length - 1];
       if (prev) f.view = prev.view;
       state.frames.push(f);
-      if (state.cur < 0) select(state.frames.length - 1); else renderStrip();
+      if (focus || state.cur < 0) { select(state.frames.length - 1); const t = $('#strip').lastElementChild; t && t.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } else renderStrip();
+      $('#msg').textContent = `Added ${label}. Mark the reference, length and chest on it.`;
       update();
     };
     img.src = src;
@@ -467,22 +475,40 @@
 
   // ---------- inputs ----------
   const vid = $('#vid');
-  $('#file').addEventListener('change', (e) => {
-    for (const file of e.target.files) {
+  let photoNo = 0;
+  function addFiles(list) {
+    let n = 0;
+    for (const file of list) {
+      const isVid = file.type.startsWith('video/') || /\.(mov|mp4|m4v|webm|3gp)$/i.test(file.name);
+      const isImg = file.type.startsWith('image/') || /\.(jpe?g|png|webp|gif|heic|heif|bmp)$/i.test(file.name);
+      if (!isVid && !isImg) continue;
+      n++;
       const url = URL.createObjectURL(file);
-      if (file.type.startsWith('video/')) { vid.src = url; $('#videoBox').hidden = false; $('#msg').textContent = ''; }
-      else addFrame(url, 'photo ' + nextId);
+      if (isVid) {
+        vid.src = url; $('#videoBox').hidden = false;
+        $('#msg').textContent = `Loaded ${file.name}. Press Auto-capture, or pause on a good frame and press Capture this frame.`;
+        $('#videoBox').scrollIntoView({ block: 'nearest' });
+      } else addFrame(url, 'photo ' + (++photoNo));
     }
+    if (!n && list.length) $('#msg').textContent = 'That file is not a photo or video.';
+  }
+  vid.addEventListener('error', () => { $('#msg').textContent = 'This browser cannot play that video format (often iPhone HEVC .mov on Windows or Linux). Try Safari, or export it as H.264 MP4.'; });
+  document.addEventListener('dragover', (e) => { e.preventDefault(); document.body.classList.add('dragging'); });
+  document.addEventListener('dragleave', (e) => { if (!e.relatedTarget) document.body.classList.remove('dragging'); });
+  document.addEventListener('drop', (e) => { e.preventDefault(); document.body.classList.remove('dragging'); if (e.dataTransfer && e.dataTransfer.files.length) addFiles(e.dataTransfer.files); });
+  document.addEventListener('paste', (e) => { const fs = [...(e.clipboardData ? e.clipboardData.files : [])]; if (fs.length) addFiles(fs); });
+  $('#file').addEventListener('change', (e) => {
+    addFiles(e.target.files);
     e.target.value = '';
   });
 
-  function grab() {
+  function grab(focus = true) {
     if (!vid.videoWidth) { $('#msg').textContent = 'The video has not loaded yet. Wait a moment and try again.'; return; }
     const c = document.createElement('canvas'); c.width = vid.videoWidth; c.height = vid.videoHeight;
     c.getContext('2d').drawImage(vid, 0, 0);
-    addFrame(c.toDataURL('image/jpeg', 0.9), `t=${vid.currentTime.toFixed(1)}s`);
+    addFrame(c.toDataURL('image/jpeg', 0.9), `t=${vid.currentTime.toFixed(1)}s`, focus);
   }
-  $('#btnGrab').onclick = grab;
+  $('#btnGrab').onclick = () => grab(true);
   $('#btnAuto').onclick = async () => {
     if (!vid.duration || !isFinite(vid.duration)) { $('#msg').textContent = 'The video has not loaded yet. Wait a moment and try again.'; return; }
     const n = Math.max(2, Math.min(30, parseInt($('#autoN').value, 10) || 8));
@@ -490,7 +516,7 @@
     for (let i = 0; i < n; i++) {
       const t = vid.duration * (i + 0.5) / n;
       await new Promise(res => { const on = () => { vid.removeEventListener('seeked', on); res(); }; vid.addEventListener('seeked', on); vid.currentTime = t; });
-      grab();
+      grab(i === 0);
     }
     btn.disabled = false;
     $('#msg').textContent = `Captured ${n} frames. Mark each one and set its view; exclude blurry frames or ones where the pig is turning.`;
@@ -566,7 +592,7 @@
       const ex = exampleFrame(view, 14);
       const img = new Image();
       img.onload = () => {
-        state.frames[i] = { id: nextId++, img, w: img.naturalWidth, h: img.naturalHeight, src: ex.src, label, view, excluded: false, pts: ex.pts };
+        state.frames[i] = { example: true, id: nextId++, img, w: img.naturalWidth, h: img.naturalHeight, src: ex.src, label, view, excluded: false, pts: ex.pts };
         if (++loaded === specs.length) { select(0); update(); $('#msg').textContent = 'Example loaded: drawn pig, 100 cm board. Drag any point to see the estimate change.'; }
       };
       img.src = ex.src;
