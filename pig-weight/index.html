@@ -55,7 +55,9 @@
   button:focus-visible, .filebtn:focus-within, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   button.primary, .filebtn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
   button[disabled] { opacity: .45; cursor: not-allowed; }
-  .filebtn input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; font-size: 0; }
+  .nativefile { font: 500 .85rem var(--font-body); color: var(--ink-soft); max-width: 100%; }
+  .nativefile::file-selector-button { font: 600 .9rem var(--font-body); background: var(--accent); color: var(--accent-ink); border: 1px solid var(--accent); border-radius: 6px; padding: 7px 12px; margin-right: 10px; cursor: pointer; }
+  .ver { font: 400 .72rem var(--font-mono); color: var(--ink-soft); }
   body.dragging .canvas-wrap { outline: 3px dashed var(--accent); outline-offset: -3px; }
   .filebtn { position: relative; display: inline-flex; }
   input[type=number], select { font: 500 .9rem var(--font-mono); background: var(--bg); color: var(--ink); border: 1px solid var(--rule); border-radius: 6px; padding: 6px 8px; width: 7.5em; }
@@ -110,7 +112,7 @@
       <div class="row" style="justify-content:space-between">
         <h2 id="h-media">1 · Load photos or video</h2>
         <div class="row">
-          <label class="filebtn primary">Add photo / video<input id="file" type="file" accept="image/*,video/*" multiple></label>
+          <label for="file" class="label" style="align-self:center">Add photo / video</label><input id="file" class="nativefile" type="file" accept="image/*,video/*" multiple>
           <button id="btnSample" type="button">Load example</button>
         </div>
       </div>
@@ -192,6 +194,7 @@
         <p>Accuracy depends on the reference sitting in the same plane as the pig, the camera pointing straight at it, and the pig standing square. Lens distortion and a curved back make straight-line length a slight underestimate.</p>
         <p>The tape formula is a rule of thumb for finishing pigs; it is less reliable for piglets and heavy sows. Calibrating against one scale weighing corrects systematic bias for your camera setup and breed.</p>
         <p>Everything runs in your browser. No image leaves your device.</p>
+        <p class="ver">Build 3 · upload diagnostics</p>
       </div>
     </aside>
   </div>
@@ -200,6 +203,7 @@
 <script>
 (() => {
   'use strict';
+  window.addEventListener('error', (ev) => { const m = document.querySelector('#msg'); if (m) m.textContent = 'Error: ' + (ev.message || 'unknown'); });
   const $ = (s) => document.querySelector(s);
   const KG_PER_LB = 0.45359237, CM_PER_IN = 2.54;
   const COLORS = () => {
@@ -483,21 +487,32 @@
       const isImg = file.type.startsWith('image/') || /\.(jpe?g|png|webp|gif|heic|heif|bmp)$/i.test(file.name);
       if (!isVid && !isImg) continue;
       n++;
+      if (isImg && !isVid) {
+        $('#msg').textContent = `Reading ${file.name}…`;
+        const label = 'photo ' + (++photoNo);
+        const fr = new FileReader();
+        fr.onload = () => addFrame(fr.result, label);
+        fr.onerror = () => { $('#msg').textContent = `Could not read ${file.name} (${fr.error && fr.error.name}).`; };
+        fr.readAsDataURL(file);
+        continue;
+      }
       const url = URL.createObjectURL(file);
       if (isVid) {
         vid.src = url; $('#videoBox').hidden = false;
         $('#msg').textContent = `Loaded ${file.name}. Press Auto-capture, or pause on a good frame and press Capture this frame.`;
         $('#videoBox').scrollIntoView({ block: 'nearest' });
-      } else addFrame(url, 'photo ' + (++photoNo));
+      }
     }
-    if (!n && list.length) $('#msg').textContent = 'That file is not a photo or video.';
+    if (!n && list.length) $('#msg').textContent = `That file is not a photo or video (${list[0].name}, type "${list[0].type || 'unknown'}").`;
   }
   vid.addEventListener('error', () => { $('#msg').textContent = 'This browser cannot play that video format (often iPhone HEVC .mov on Windows or Linux). Try Safari, or export it as H.264 MP4.'; });
   document.addEventListener('dragover', (e) => { e.preventDefault(); document.body.classList.add('dragging'); });
   document.addEventListener('dragleave', (e) => { if (!e.relatedTarget) document.body.classList.remove('dragging'); });
   document.addEventListener('drop', (e) => { e.preventDefault(); document.body.classList.remove('dragging'); if (e.dataTransfer && e.dataTransfer.files.length) addFiles(e.dataTransfer.files); });
   document.addEventListener('paste', (e) => { const fs = [...(e.clipboardData ? e.clipboardData.files : [])]; if (fs.length) addFiles(fs); });
+  $('#file').addEventListener('click', () => { $('#msg').textContent = 'Opening the file picker…'; });
   $('#file').addEventListener('change', (e) => {
+    if (!e.target.files || !e.target.files.length) { $('#msg').textContent = 'No file was received from the picker.'; return; }
     addFiles(e.target.files);
     e.target.value = '';
   });
