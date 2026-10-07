@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>eÁFA-átállás 2027 — Ledgerworks</title>
+<meta name="description" content="Az ÁNYK 2026. december 31. után nem használható áfabevallásra. Személyre szabott eÁFA-átállási diagnózis: az Ön útvonala, az Ön határidői, és ami januárban eltörik.">
+<meta name="theme-color" content="#9B3A25">
+<link rel="canonical" href="https://ledgerworkshu.com/eafa">
+<link rel="alternate" hreflang="hu" href="https://ledgerworkshu.com/eafa?lang=hu">
+<link rel="alternate" hreflang="en" href="https://ledgerworkshu.com/eafa?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://ledgerworkshu.com/eafa">
+<meta property="og:type" content="website">
+<meta property="og:title" content="eÁFA-átállás 2027 — Ledgerworks">
+<meta property="og:description" content="Az ÁNYK 2026. december 31. után nem használható áfabevallásra. Nézze meg, melyik útvonalon van, és mi a teendője január 20-ig.">
+<meta property="og:url" content="https://ledgerworkshu.com/eafa">
+<meta property="og:locale" content="hu_HU">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="eÁFA-átállás 2027 — Ledgerworks">
+<meta name="twitter:description" content="Az ÁNYK 2026. december 31. után nem használható áfabevallásra. Nézze meg, melyik útvonalon van, és mi a teendője január 20-ig.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23181C1A'/%3E%3Cpath d='M8 10h16M8 16h16M8 22h10' stroke='%23E28A6F' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+  /* Page-specific additions on top of the shared system. */
+  .countdown {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent);
+    border: 1px solid var(--rule);
+    background: var(--bg-alt);
+    border-radius: 3px;
+    padding: 10px 14px;
+    display: inline-block;
+    margin-bottom: 22px;
+  }
+  .dateline {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 2px 20px;
+    border-top: 1px solid var(--rule);
+    padding-top: 18px;
+  }
+  .dateline dt {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent);
+    padding: 12px 0 0;
+  }
+  .dateline dd {
+    margin: 0;
+    padding: 12px 0;
+    font-size: 15px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .dateline dt + dd { border-bottom: 1px solid var(--rule); }
+  .dateline dd small { display: block; color: var(--ink-soft); font-size: 13px; margin-top: 3px; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .note {
+    font-size: 13px;
+    color: var(--ink-soft);
+    border-left: 2px solid var(--rule);
+    padding-left: 14px;
+    margin: 20px 0 0;
+  }
+  .price-line {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    margin: 0 0 4px;
+  }
+  @media (max-width: 720px) {
+    .dateline { grid-template-columns: 1fr; gap: 0; }
+    .dateline dt { padding-bottom: 0; }
+    .dateline dt + dd { padding-top: 4px; }
+    .split { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="wordmark" href="/" style="text-decoration:none;">LEDGERWORKS</a>
+    <nav>
+      <a href="#mi-valtozik" data-i18n="nav.changes">Mi változik</a>
+      <a href="#hataridok" data-i18n="nav.deadlines">Határidők</a>
+      <a href="#diagnozis" data-i18n="nav.diagnosis">Diagnózis</a>
+      <span class="lang-switch" data-lang-switch></span>
+    </nav>
+  </div>
+</header>
+
+<section class="wrap" style="padding: 56px 0 40px;">
+  <div class="countdown" id="countdown">Az ÁNYK-ig hátralévő idő betöltése…</div>
+  <h1 data-i18n="hero.h1" style="font-size: clamp(30px, 4vw, 42px); line-height: 1.16; font-weight: 600; margin: 0 0 18px; max-width: 26ch;">Januártól az áfabevallás nem űrlap lesz, hanem egyeztetés.</h1>
+  <p data-i18n="hero.lede" style="font-size: 17px; color: var(--ink-soft); max-width: 58ch; margin: 0 0 26px;">
+    Az ÁNYK 2026. december 31. után áfabevallásra nem használható. Az eÁFA
+    tételszinten dolgozik: a bevallás alapja az az adat, amit a NAV már tud a
+    cégéről. Ami eddig nem látszott — a be nem könyvelt bejövő számla, az
+    eltérő áfakód, a felfüggesztett adószámú partner — januártól validációs
+    hibaként jön elő.
+  </p>
+  <a class="btn btn-primary" href="#diagnozis" data-i18n="hero.cta1">Kérem a diagnózist — 34 900 Ft</a>
+  <a class="btn btn-ghost" href="#mi-valtozik" data-i18n="hero.cta2">Előbb a részletek</a>
+</section>
+
+<hr class="rule">
+
+<section class="wrap" id="mi-valtozik" style="padding: 48px 0;">
+  <h2 data-i18n="ch.h2" style="font-size: 24px; font-weight: 600; margin: 0 0 8px;">Mi változik pontosan</h2>
+  <p data-i18n="ch.intro" style="color: var(--ink-soft); max-width: 62ch; margin: 0 0 28px;">
+    Négy dolog esett egymásra tizenkét hónapon belül. Egyenként mindegyik
+    kezelhető; együtt ez a legnagyobb kényszerű átállás a magyar adózás
+    digitalizációjában.
+  </p>
+  <div class="split">
+    <div>
+      <h3 style="font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft); letter-spacing: 0.04em; margin: 0 0 6px;" data-i18n="ch.anyk.h">ÁNYK</h3>
+      <p data-i18n="ch.anyk.p" style="margin: 0 0 22px; font-size: 15px;">2026. december 31. után áfabevallásra nem használható. Utána kizárólag az eÁFA webes felülete vagy gép-gép (M2M) kapcsolat marad. Kivétel: korábbi időszakok önellenőrzése.</p>
+
+      <h3 style="font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft); letter-spacing: 0.04em; margin: 0 0 6px;" data-i18n="ch.m2m.h">eÁFA M2M 2.0</h3>
+      <p data-i18n="ch.m2m.p" style="margin: 0 0 22px; font-size: 15px;">A 2.0-s XSD 2026. augusztus 3-tól éles és kötelező, az 1.0 megszűnt. Aki tavaly fejlesztett rá, annak újra kell néznie.</p>
+    </div>
+    <div>
+      <h3 style="font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft); letter-spacing: 0.04em; margin: 0 0 6px;" data-i18n="ch.recon.h">Adategyeztetési eljárás</h3>
+      <p data-i18n="ch.recon.p" style="margin: 0 0 22px; font-size: 15px;">2025. január 1-jétől a NAV formálisan is egyeztetheti a partnerek egymásnak ellentmondó adatszolgáltatásait. Az eltérést megéri előbb megtalálni, mint a hatóságnak.</p>
+
+      <h3 style="font-family: var(--font-mono); font-size: 12px; color: var(--ink-soft); letter-spacing: 0.04em; margin: 0 0 6px;" data-i18n="ch.receipt.h">Nyugtaadat-szolgáltatás</h3>
+      <p data-i18n-html="ch.receipt.p" style="margin: 0 0 22px; font-size: 15px;">2026. szeptember 1-jétől kötelező. Ez <em>adat</em>kötelezettség, nem hardverkötelezettség — a NAV ePénztárgép és eNyugta alkalmazása ingyenes, a hardveres e-pénztárgép külön ütemben, 2028 júliusáig tartó párhuzamos használattal fut.</p>
+    </div>
+  </div>
+  <p class="note" data-i18n-html="ch.note">
+    A szoftverszállítók abban versenyeznek, hogy ki tudja <em>beküldeni</em> az
+    M2M-állományt. Az a kérdés, amire senki nem válaszol: egyezik-e a
+    könyvelése azzal a másolattal, amit a NAV már őriz a cégéről.
+  </p>
+</section>
+
+<hr class="rule">
+
+<section class="wrap" id="hataridok" style="padding: 48px 0;">
+  <h2 data-i18n="cal.h2" style="font-size: 24px; font-weight: 600; margin: 0 0 24px;">A naptár</h2>
+  <dl class="dateline">
+    <dt>2026.09.01.</dt>
+    <dd data-i18n-html="cal.d1">A nyugtaadat-szolgáltatás kötelezővé vált.<small>Megtörtént. Akit érint és nem állt át, annak ez már futó kockázat.</small></dd>
+    <dt>2026.12.31.</dt>
+    <dd data-i18n-html="cal.d2">Az ÁNYK utolsó napja áfabevallásra.<small>Eddig tart az átmeneti időszak: regisztrálni, tesztelni és párhuzamosan még ÁNYK-zni lehet.</small></dd>
+    <dt>2027.01.20.</dt>
+    <dd data-i18n-html="cal.d3">A 2026. decemberi (havi) és IV. negyedéves bevallás határideje — már eÁFA-n keresztül.<small>Ez az első határidő, amire nincs tartalék megoldás.</small></dd>
+  </dl>
+  <p class="note" data-i18n="cal.note">
+    A saját határidejét a bevallási gyakorisága dönti el. A diagnózis ezt
+    kiszámolja Önre, de a végleges dátumot erősítse meg a könyvelőjével vagy a
+    NAV közleményével.
+  </p>
+</section>
+
+<hr class="rule">
+
+<section class="wrap" id="diagnozis" style="padding: 48px 0 64px;">
+  <h2 data-i18n="dg.h2" style="font-size: 24px; font-weight: 600; margin: 0 0 8px;">eÁFA-átállási diagnózis</h2>
+  <p data-i18n="dg.intro" style="color: var(--ink-soft); max-width: 62ch; margin: 0 0 6px;">
+    Nyolc kérdés, majd egy ügynök összeállítja a cégre szabott átállási tervet:
+    melyik útvonalon van (webes felület vagy M2M) és miért, mik a saját
+    határidői, mi törik el januárban, melyik adatminőségi kockázat a
+    legvalószínűbb Önnél, heti bontású teendőlista január 20-ig, és a konkrét
+    kérdések, amiket a könyvelőjének és a szoftverszállítójának fel kell tennie.
+  </p>
+  <p class="price-line" data-i18n="dg.price">34 900 Ft</p>
+  <p data-i18n="dg.priceNote" style="color: var(--ink-soft); font-size: 13px; margin: 0 0 26px;">egyszeri · pár perc alatt elkészül · letölthető .md fájlban</p>
+
+  <div class="brief-shell">
+    <div id="eafa-cancelled-note" class="brief-error" style="display:none; margin-bottom: 16px;" data-i18n="dg.cancelled">A fizetést megszakította — a válaszai megvannak, bármikor folytathatja.</div>
+
+    <div id="eafa-wizard">
+      <div class="brief-progress" id="eafa-progress">1. kérdés a 8-ból</div>
+      <div id="eafa-question-host"></div>
+      <div class="brief-nav">
+        <button class="btn btn-ghost" id="eafa-back" type="button" data-i18n="dg.back">Vissza</button>
+        <button class="btn btn-primary" id="eafa-next" type="button">Tovább</button>
+      </div>
+    </div>
+
+    <div id="eafa-checkout-loading" class="brief-loading" style="display:none;" data-i18n="dg.opening">Biztonságos fizetés megnyitása…</div>
+    <div id="eafa-loading" class="brief-loading" style="display:none;" data-i18n="dg.loading">Fizetés megerősítve — készül a diagnózis, általában 20–40 másodperc…</div>
+    <div id="eafa-error" class="brief-error" style="display:none;"></div>
+
+    <div id="eafa-result" style="display:none;">
+      <div class="brief-output" id="eafa-output"></div>
+      <div class="brief-nav">
+        <button class="btn btn-ghost" id="eafa-download" type="button" data-i18n="dg.download">Letöltés (.md)</button>
+        <a class="btn btn-primary" href="mailto:marton.thuroczy@ledgerworkshu.com?subject=eÁFA-előrepülés" data-i18n="dg.ask">Kérdésem van</a>
+      </div>
+    </div>
+  </div>
+
+  <p class="note" data-i18n="dg.disclosure">
+    Ezt a diagnózist AI-ügynök készíti, tervezési célra. Amit határidőről,
+    áfakötelezettségről vagy jogszabályi megfelelésről ír, az kiindulási
+    jelzés, nem adótanácsadás és nem könyvelési szolgáltatás — mielőtt lépne,
+    erősítse meg a könyvelőjével vagy adótanácsadójával.
+  </p>
+</section>
+
+<hr class="rule">
+
+<footer class="wrap" style="padding: 28px 0 48px; font-size: 13px; color: var(--ink-soft);">
+  <p data-i18n="ft.legal" style="margin: 0 0 8px; max-width: 70ch;">
+    A Ledgerworks szoftverfejlesztési és automatizálási szolgáltatást nyújt.
+    Nem végez könyvelést, adótanácsadást, könyvvizsgálatot, és nem nyújt be
+    bevallást az ügyfelei nevében. A forintos fizetés licencelt
+    fizetésszolgáltatón keresztül fut.
+  </p>
+  <p style="margin: 0;"><a href="mailto:marton.thuroczy@ledgerworkshu.com">marton.thuroczy@ledgerworkshu.com</a> · <a href="/">ledgerworkshu.com</a></p>
+</footer>
+
+<script src="/assets/i18n.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  // ---- English copy ------------------------------------------------------
+  // This page's markup is Hungarian, so the runtime reads Hungarian out of the
+  // DOM and only English needs writing here. The English reader this targets is
+  // the finance lead at a foreign-owned Hungarian entity: the obligations are
+  // identical, only the language of the explanation changes. Prices stay in
+  // forint because the filing, and the invoice, are Hungarian either way.
+  var EN = {
+    'lang.switchLabel': 'Language',
+    'lang.to.en': 'Switch to English',
+    'lang.to.hu': 'Switch to Hungarian',
+
+    'nav.changes': 'What changes',
+    'nav.deadlines': 'Deadlines',
+    'nav.diagnosis': 'Diagnosis',
+
+    'hero.h1': 'From January the VAT return stops being a form and becomes a reconciliation.',
+    'hero.lede': 'ÁNYK cannot be used for VAT returns after 31 December 2026. eÁFA works at transaction level: the return is built from the data NAV already holds about your company. What used to stay invisible — a supplier invoice never booked, a mismatched VAT code, a partner whose tax number was suspended — surfaces from January as a validation error.',
+    'hero.cta1': 'Get the diagnosis — 34,900 Ft',
+    'hero.cta2': 'Details first',
+
+    'ch.h2': 'What changes, precisely',
+    'ch.intro': 'Four things landed on top of each other within twelve months. Individually each is manageable; together this is the largest forced migration in Hungarian tax digitalisation.',
+    'ch.anyk.h': 'ÁNYK',
+    'ch.anyk.p': 'Unusable for VAT returns after 31 December 2026. After that only the eÁFA web interface or a machine-to-machine (M2M) connection remains. Exception: self-revisions of earlier periods.',
+    'ch.m2m.h': 'eÁFA M2M 2.0',
+    'ch.m2m.p': 'The 2.0 XSD has been live and mandatory since 3 August 2026; 1.0 is gone. Anyone who built against it last year has to look again.',
+    'ch.recon.h': 'Data reconciliation procedure',
+    'ch.recon.p': 'Since 1 January 2025 NAV can formally reconcile contradictory data reported by two partners. It is worth finding the discrepancy before the authority does.',
+    'ch.receipt.h': 'Receipt data reporting',
+    'ch.receipt.p': 'Mandatory since 1 September 2026. This is a <em>data</em> obligation, not a hardware one — NAV\'s ePénztárgép and eNyugta apps are free, and the hardware e-pénztárgép runs on a separate schedule with parallel use permitted until July 2028.',
+    'ch.note': 'Software vendors are competing on who can <em>submit</em> the M2M file. The question nobody answers: does your ledger agree with the copy NAV already holds of your company?',
+
+    'cal.h2': 'The calendar',
+    'cal.d1': 'Receipt data reporting became mandatory.<small>Already happened. Anyone affected who has not migrated is carrying live risk.</small>',
+    'cal.d2': 'Last day ÁNYK accepts a VAT return.<small>The transitional period ends here: until then you can register, test, and still file through ÁNYK in parallel.</small>',
+    'cal.d3': 'Deadline for the December 2026 monthly and Q4 returns — through eÁFA.<small>This is the first deadline with no fallback.</small>',
+    'cal.note': 'Your own deadline is set by your filing frequency. The diagnosis works it out for you, but confirm the final date with your accountant or against NAV\'s own announcement.',
+
+    'dg.h2': 'eÁFA migration diagnosis',
+    'dg.intro': 'Eight questions, then an agent assembles a migration plan for your company: which route you are on (web interface or M2M) and why, your own deadlines, what breaks in January, which data-quality risk is most likely in your case, a week-by-week task list to 20 January, and the specific questions to put to your accountant and your software vendor.',
+    'dg.price': '34,900 Ft',
+    'dg.priceNote': 'one-time · ready in minutes · downloadable as .md',
+    'dg.cancelled': 'Checkout was cancelled — your answers are still here, pick up whenever you\'re ready.',
+    'dg.back': 'Back',
+    'dg.opening': 'Opening secure checkout…',
+    'dg.loading': 'Payment confirmed — drafting the diagnosis, usually 20–40 seconds…',
+    'dg.download': 'Download (.md)',
+    'dg.ask': 'I have a question',
+    'dg.disclosure': 'This diagnosis is produced by an AI agent, for planning purposes. What it says about deadlines, VAT obligations or regulatory compliance is a starting flag — not tax advice and not an accounting service. Confirm with your accountant or tax adviser before you act on it.',
+
+    'ft.legal': 'Ledgerworks provides software development and automation services. It does not do bookkeeping, tax advice or audit, and does not file returns on behalf of its clients. Forint payments run through a licensed payment processor.',
+
+    // countdown + wizard
+    'cd.days': '{n} DAYS LEFT OF ÁNYK · FIRST eÁFA DEADLINE: 20 JAN 2027',
+    'cd.expired': 'ÁNYK HAS EXPIRED · FIRST eÁFA DEADLINE: 20 JAN 2027',
+    'wiz.progress': 'Question {n} of {total}',
+    'wiz.next': 'Next',
+    'wiz.pay': 'Continue to payment — 34,900 Ft',
+    'wiz.validate': 'Pick an answer or write a line before moving on.',
+    'wiz.errStart': 'checkout did not open ({status})',
+    'wiz.errNoUrl': 'no checkout link returned',
+    'wiz.errRequest': 'request failed ({status})',
+    'wiz.errCheckout': 'Could not open checkout right now ({msg}). Please try again, or email marton.thuroczy@ledgerworkshu.com.',
+    'wiz.errGenerate': 'Could not produce the diagnosis ({msg}). If you were charged, email the confirmation to marton.thuroczy@ledgerworkshu.com and I will produce it manually.',
+    'wiz.truncated': 'The diagnosis was cut short at the length limit. Email marton.thuroczy@ledgerworkshu.com and I will send the full version.',
+
+    'q.tevekenyseg.label': 'What does the company do, and under what legal form?',
+    'q.tevekenyseg.hint': 'A couple of sentences is enough. The activity decides which VAT situations can come up.',
+    'q.tevekenyseg.ph': 'e.g. Kft., construction subcontractor, 12 staff, domestic customers',
+    'q.bevallas.label': 'How often do you file a VAT return?',
+    'q.bevallas.o1': 'Monthly',
+    'q.bevallas.o2': 'Quarterly',
+    'q.bevallas.o3': 'Annually',
+    'q.bevallas.o4': 'Not sure',
+    'q.kimeno.label': 'How many outgoing invoices do you issue per month?',
+    'q.kimeno.hint': 'This decides whether the eÁFA web interface is enough or you need M2M.',
+    'q.bejovo.label': 'How many incoming (supplier) invoices do you receive per month?',
+    'q.band1': '0–50',
+    'q.band2': '51–200',
+    'q.band3': '201–500',
+    'q.band4': '501–2000',
+    'q.band5': 'Over 2000',
+    'q.szoftver.label': 'Which invoicing and accounting software do you use today?',
+    'q.szoftver.hint': 'If you are not sure of the exact product, write what you know — the vendor name helps.',
+    'q.szoftver.ph': 'e.g. Számlázz.hu for outgoing invoices, the accountant uses Kulcs-Soft',
+    'q.ki_keszit.label': 'Who prepares the VAT return today?',
+    'q.ki_keszit.o1': 'External accountant or accounting firm',
+    'q.ki_keszit.o2': 'In-house accountant / finance staff',
+    'q.ki_keszit.o3': 'I do it myself, in ÁNYK',
+    'q.ki_keszit.o4': 'I am an accounting firm — I prepare it for several clients',
+    'q.nyugta.label': 'Do you issue receipts, and if so how?',
+    'q.nyugta.hint': 'Asked because of the receipt data reporting obligation from 1 September 2026.',
+    'q.nyugta.o1': 'With an online cash register',
+    'q.nyugta.o2': 'From a receipt book or from software',
+    'q.nyugta.o3': 'I do not issue receipts, only invoices',
+    'q.nyugta.o4': 'Not sure',
+    'q.specialis.label': 'Any special VAT situation? Anything else worth knowing?',
+    'q.specialis.hint': 'E.g. reverse charge, EU transactions, imports, cash accounting, partial deduction, exempt status, VAT grouping. Optional.',
+    'q.specialis.ph': 'Optional'
+  };
+
+  // Hungarian strings for the parts that render themselves, and so have no
+  // element for the runtime to read out of the markup.
+  var HU = {
+    'lang.switchLabel': 'Nyelv',
+    'lang.to.en': 'Váltás angolra',
+    'lang.to.hu': 'Váltás magyarra',
+    'cd.days': 'AZ ÁNYK-BÓL {n} NAP VAN HÁTRA · ELSŐ eÁFA-HATÁRIDŐ: 2027.01.20.',
+    'cd.expired': 'AZ ÁNYK LEJÁRT · ELSŐ eÁFA-HATÁRIDŐ: 2027.01.20.',
+    'wiz.progress': '{n}. kérdés a {total}-ból',
+    'wiz.next': 'Tovább',
+    'wiz.pay': 'Tovább a fizetéshez — 34 900 Ft',
+    'wiz.validate': 'Válasszon egy lehetőséget, vagy írjon egy sort, mielőtt továbblép.',
+    'wiz.errStart': 'a fizetés nem indult el ({status})',
+    'wiz.errNoUrl': 'nem érkezett fizetési link',
+    'wiz.errRequest': 'a kérés nem sikerült ({status})',
+    'wiz.errCheckout': 'A fizetést most nem sikerült megnyitni ({msg}). Próbálja újra, vagy írjon a marton.thuroczy@ledgerworkshu.com címre.',
+    'wiz.errGenerate': 'A diagnózist nem sikerült elkészíteni ({msg}). Ha a fizetés lement, küldje el a visszaigazolást a marton.thuroczy@ledgerworkshu.com címre, és kézzel elkészítem.',
+    'wiz.truncated': 'A diagnózis a hosszkorlátnál megszakadt. Írjon a marton.thuroczy@ledgerworkshu.com címre, és elküldöm a teljes változatot.',
+
+    'q.tevekenyseg.label': 'Mivel foglalkozik a cég, és milyen cégformában?',
+    'q.tevekenyseg.hint': 'Pár mondat elég. A tevékenység dönti el, milyen áfa-helyzetek jöhetnek elő.',
+    'q.tevekenyseg.ph': 'pl. Kft., építőipari alvállalkozó, 12 fő, belföldi megrendelők',
+    'q.bevallas.label': 'Milyen gyakorisággal ad be áfabevallást?',
+    'q.bevallas.o1': 'Havonta',
+    'q.bevallas.o2': 'Negyedévente',
+    'q.bevallas.o3': 'Évente',
+    'q.bevallas.o4': 'Nem tudom',
+    'q.kimeno.label': 'Hány kimenő számlát állít ki havonta?',
+    'q.kimeno.hint': 'Ez dönti el, hogy a webes eÁFA-felület elég-e, vagy M2M-re van szüksége.',
+    'q.bejovo.label': 'Hány bejövő (befogadott) számlát fogad be havonta?',
+    'q.band1': '0–50',
+    'q.band2': '51–200',
+    'q.band3': '201–500',
+    'q.band4': '501–2000',
+    'q.band5': '2000 felett',
+    'q.szoftver.label': 'Milyen számlázó- és könyvelőprogramot használ ma?',
+    'q.szoftver.hint': 'Ha nem tudja pontosan, írja le, amit tud — a szállító neve is segít.',
+    'q.szoftver.ph': 'pl. Számlázz.hu a kimenő számlákra, a könyvelő Kulcs-Softot használ',
+    'q.ki_keszit.label': 'Ki készíti ma az áfabevallást?',
+    'q.ki_keszit.o1': 'Külső könyvelő vagy könyvelőiroda',
+    'q.ki_keszit.o2': 'Belső könyvelő / pénzügyes',
+    'q.ki_keszit.o3': 'Saját magam, ÁNYK-ban',
+    'q.ki_keszit.o4': 'Könyvelőiroda vagyok — több ügyfélnek készítem',
+    'q.nyugta.label': 'Ad-e ki nyugtát, és ha igen, hogyan?',
+    'q.nyugta.hint': 'A 2026. szeptember 1-jei nyugtaadat-szolgáltatás miatt kérdés.',
+    'q.nyugta.o1': 'Online pénztárgéppel',
+    'q.nyugta.o2': 'Nyugtatömbbel vagy szoftverből',
+    'q.nyugta.o3': 'Nem adok nyugtát, csak számlát állítok ki',
+    'q.nyugta.o4': 'Nem tudom',
+    'q.specialis.label': 'Van-e különleges áfa-helyzete? Bármi más, amit tudni érdemes?',
+    'q.specialis.hint': 'Pl. fordított adózás, EU-s ügyletek, import, pénzforgalmi elszámolás, arányosítás, alanyi mentesség, csoportos adóalanyiság. Nem kötelező.',
+    'q.specialis.ph': 'Nem kötelező'
+  };
+
+  var i18n = LWI18n.init({
+    default: 'hu',
+    strings: { hu: HU, en: EN },
+    meta: {
+      en: {
+        title: 'Hungarian eÁFA migration 2027 — Ledgerworks',
+        description: 'ÁNYK cannot be used for VAT returns after 31 December 2026. Find out which route your company is on and what you need to do before 20 January.',
+        locale: 'en_GB'
+      }
+    },
+    onChange: function () { if (window.__lwRerender) window.__lwRerender(); }
+  });
+  var t = function (k, v) { return i18n.t(k, v); };
+
+  // ---- countdown ---------------------------------------------------------
+  // Counts down to the last day ÁNYK accepts a VAT return. Local midnight is
+  // close enough — this is a nudge, not a deadline clock anyone should file by.
+  function renderCountdown() {
+    var el = document.getElementById('countdown');
+    var anyk = new Date(2026, 11, 31, 23, 59, 59); // 2026-12-31, month is 0-based
+    var days = Math.ceil((anyk - new Date()) / 86400000);
+    el.textContent = days > 0 ? t('cd.days', { n: days }) : t('cd.expired');
+  }
+
+  // ---- diagnosis wizard --------------------------------------------------
+  function bands() { return [t('q.band1'), t('q.band2'), t('q.band3'), t('q.band4'), t('q.band5')]; }
+
+  function buildQuestions() {
+    return [
+      { id: 'tevekenyseg', type: 'text', label: t('q.tevekenyseg.label'), hint: t('q.tevekenyseg.hint'), placeholder: t('q.tevekenyseg.ph') },
+      { id: 'bevallas', type: 'choice', label: t('q.bevallas.label'),
+        options: [t('q.bevallas.o1'), t('q.bevallas.o2'), t('q.bevallas.o3'), t('q.bevallas.o4')] },
+      { id: 'kimeno', type: 'choice', label: t('q.kimeno.label'), hint: t('q.kimeno.hint'), options: bands() },
+      { id: 'bejovo', type: 'choice', label: t('q.bejovo.label'), options: bands() },
+      { id: 'szoftver', type: 'text', label: t('q.szoftver.label'), hint: t('q.szoftver.hint'), placeholder: t('q.szoftver.ph') },
+      { id: 'ki_keszit', type: 'choice', label: t('q.ki_keszit.label'),
+        options: [t('q.ki_keszit.o1'), t('q.ki_keszit.o2'), t('q.ki_keszit.o3'), t('q.ki_keszit.o4')] },
+      { id: 'nyugta', type: 'choice', label: t('q.nyugta.label'), hint: t('q.nyugta.hint'),
+        options: [t('q.nyugta.o1'), t('q.nyugta.o2'), t('q.nyugta.o3'), t('q.nyugta.o4')] },
+      { id: 'specialis', type: 'text', label: t('q.specialis.label'), hint: t('q.specialis.hint'), placeholder: t('q.specialis.ph'), optional: true }
+    ];
+  }
+
+  var STORAGE_KEY = 'ledgerworks_eafa_answers';
+  var questions = buildQuestions();
+  var answers = {};
+  // Choice answers are remembered by position as well as by text. The text is
+  // what the agent receives, but it changes when the language does — the index
+  // is what survives a switch mid-wizard.
+  var picked = {};
+  var current = 0;
+
+  try {
+    var saved = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || 'null');
+    if (saved && saved.answers) { answers = saved.answers; picked = saved.picked || {}; }
+    else if (saved) { answers = saved; }
+  } catch (e) {}
+
+  var host = document.getElementById('eafa-question-host');
+  var progress = document.getElementById('eafa-progress');
+  var backBtn = document.getElementById('eafa-back');
+  var nextBtn = document.getElementById('eafa-next');
+  var wizard = document.getElementById('eafa-wizard');
+  var checkoutLoadingEl = document.getElementById('eafa-checkout-loading');
+  var loadingEl = document.getElementById('eafa-loading');
+  var errorEl = document.getElementById('eafa-error');
+  var cancelledEl = document.getElementById('eafa-cancelled-note');
+  var resultEl = document.getElementById('eafa-result');
+  var outputEl = document.getElementById('eafa-output');
+  var downloadBtn = document.getElementById('eafa-download');
+
+  // Answers are rendered as text nodes, never interpolated into HTML — the
+  // wizard rebuilds this host on every step, so a pasted value containing
+  // markup would otherwise execute.
+  function renderQuestion() {
+    var q = questions[current];
+    progress.textContent = t('wiz.progress', { n: current + 1, total: questions.length });
+    host.textContent = '';
+
+    var labelEl = document.createElement('p');
+    labelEl.className = 'brief-question';
+    labelEl.textContent = q.label;
+    host.appendChild(labelEl);
+
+    if (q.hint) {
+      var hintEl = document.createElement('p');
+      hintEl.className = 'brief-hint';
+      hintEl.textContent = q.hint;
+      host.appendChild(hintEl);
+    }
+
+    if (q.type === 'text') {
+      var ta = document.createElement('textarea');
+      ta.placeholder = q.placeholder || '';
+      ta.value = answers[q.id] || '';
+      ta.addEventListener('input', function (e) { answers[q.id] = e.target.value; });
+      host.appendChild(ta);
+    } else {
+      var group = document.createElement('div');
+      group.className = 'choice-group';
+      q.options.forEach(function (opt, idx) {
+        var label = document.createElement('label');
+        label.className = 'choice-option' + (picked[q.id] === idx ? ' selected' : '');
+        var radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = 'eafa-' + q.id;
+        label.appendChild(radio);
+        label.appendChild(document.createTextNode(' ' + opt));
+        label.addEventListener('click', function () {
+          group.querySelectorAll('.choice-option').forEach(function (o) { o.classList.remove('selected'); });
+          label.classList.add('selected');
+          picked[q.id] = idx;
+          answers[q.id] = opt;
+        });
+        group.appendChild(label);
+      });
+      host.appendChild(group);
+    }
+
+    backBtn.style.visibility = current === 0 ? 'hidden' : 'visible';
+    nextBtn.textContent = current === questions.length - 1 ? t('wiz.pay') : t('wiz.next');
+  }
+
+  // Called by the i18n runtime after a language switch.
+  window.__lwRerender = function () {
+    questions = buildQuestions();
+    questions.forEach(function (q) {
+      if (q.type === 'choice' && typeof picked[q.id] === 'number') {
+        answers[q.id] = q.options[picked[q.id]];
+      }
+    });
+    renderCountdown();
+    if (host) renderQuestion();
+  };
+
+  function currentAnswered() {
+    var q = questions[current];
+    if (q.optional) return true;
+    var v = answers[q.id];
+    return typeof v === 'string' && v.trim().length > 0;
+  }
+
+  backBtn.addEventListener('click', function () {
+    if (current > 0) { current -= 1; renderQuestion(); }
+  });
+
+  nextBtn.addEventListener('click', function () {
+    if (!currentAnswered()) { alert(t('wiz.validate')); return; }
+    if (current < questions.length - 1) { current += 1; renderQuestion(); }
+    else { goToCheckout(); }
+  });
+
+  function saveAnswers() {
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ answers: answers, picked: picked }));
+    } catch (e) {}
+  }
+
+  function goToCheckout() {
+    saveAnswers();
+    wizard.style.display = 'none';
+    errorEl.style.display = 'none';
+    checkoutLoadingEl.style.display = 'block';
+
+    fetch('/api/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product: 'eafa', answers: answers, lang: i18n.lang })
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error(t('wiz.errStart', { status: res.status }));
+        return res.json();
+      })
+      .then(function (data) {
+        if (!data.url) throw new Error(t('wiz.errNoUrl'));
+        window.location.href = data.url; // hands off to Stripe's hosted page
+      })
+      .catch(function (err) {
+        checkoutLoadingEl.style.display = 'none';
+        wizard.style.display = 'block';
+        errorEl.style.display = 'block';
+        errorEl.textContent = t('wiz.errCheckout', { msg: err.message });
+      });
+  }
+
+  function generateDiagnosis(sessionId) {
+    wizard.style.display = 'none';
+    errorEl.style.display = 'none';
+    loadingEl.style.display = 'block';
+
+    fetch('/api/eafa', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ answers: answers, sessionId: sessionId, lang: i18n.lang })
+    })
+      .then(function (res) {
+        return res.json().then(function (data) {
+          if (!res.ok) throw new Error(data.error || t('wiz.errRequest', { status: res.status }));
+          return data;
+        });
+      })
+      .then(function (data) {
+        loadingEl.style.display = 'none';
+        outputEl.textContent = data.brief;
+        resultEl.style.display = 'block';
+        if (data.truncated) {
+          errorEl.style.display = 'block';
+          errorEl.textContent = t('wiz.truncated');
+        }
+        try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) {}
+      })
+      .catch(function (err) {
+        loadingEl.style.display = 'none';
+        wizard.style.display = 'block';
+        errorEl.style.display = 'block';
+        errorEl.textContent = t('wiz.errGenerate', { msg: err.message });
+      });
+  }
+
+  // Handle return from Stripe Checkout (success or cancel). Stripe cannot
+  // carry ?lang= back, so the language is restored from the remembered choice
+  // and written back into the URL here.
+  (function handleCheckoutReturn() {
+    var params = new URLSearchParams(window.location.search);
+    var sessionId = params.get('session_id');
+    var cancelled = params.get('checkout') === 'cancelled';
+    if (!sessionId && !cancelled) return;
+
+    var keep = i18n.lang === 'hu' ? '' : '?lang=' + i18n.lang;
+    window.history.replaceState({}, '', window.location.pathname + keep + '#diagnozis');
+
+    if (sessionId) generateDiagnosis(sessionId);
+    else cancelledEl.style.display = 'block';
+  })();
+
+  downloadBtn.addEventListener('click', function () {
+    var blob = new Blob([outputEl.textContent], { type: 'text/markdown' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'eafa-atallasi-diagnozis.md';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  renderCountdown();
+  renderQuestion();
+})();
+</script>
+
+</body>
+</html>
