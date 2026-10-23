@@ -1,17 +1,31 @@
 // /api/brief.js
 // Generates the build brief. Runs ONLY after payment is verified with Stripe
-// directly — the browser's word is never accepted as proof of payment.
+// directly — the browser's word is never accepted as proof of payment. The
+// verify/claim/recover sequence lives in _shared.js so every paid generator
+// on the site behaves identically; this file only supplies the prompt and the
+// wording of its errors.
 //
 // Env vars required: ANTHROPIC_API_KEY, STRIPE_SECRET_KEY, PUBLIC_BASE_URL
 // Env vars recommended: Vercel KV — without it, replay protection is disabled
 // and a paid session id could be reused to generate more than one brief.
 
-const {
-  BRIEF_PRICE_CENTS, BRIEF_CURRENCY, makeStripe, kv, sanitizeAnswers
-} = require('./_shared');
+const { getProduct, claimPaidSession, generate } = require('./_shared');
 
+const PRODUCT = getProduct('brief');
 const MODEL = 'claude-sonnet-5';
 const MAX_TOKENS = 4000;
+
+const CONTACT = 'marton.thuroczy@ledgerworkshu.com';
+
+const GATE_ERRORS = {
+  payment_required: 'Payment required.',
+  unverifiable: 'Could not verify payment.',
+  not_paid: 'Payment not completed for this session.',
+  amount_mismatch: 'Payment does not match the expected amount.',
+  too_old: 'This payment is too old to generate automatically. Email ' + CONTACT + ' and I will send it manually.',
+  already_used: 'This payment has already been used. If you did not receive your brief, email ' + CONTACT + '.',
+  answers_lost: 'Could not recover your answers. Email ' + CONTACT + ' and I will generate it manually.'
+};
 
 const SYSTEM_PROMPT = `You are the Ledgerworks build-brief agent. Ledgerworks is a
 one-person AI-agent build shop for crypto and fintech operations: non-custodial by
@@ -123,6 +137,16 @@ function buildUserMessage(a) {
   ].join('\n') + '\n</intake>';
 }
 
+// The prompt is authored in English. Rather than maintain a second copy of a
+// hundred lines of regulatory guidance, a non-native language is requested as
+// an instruction appended to it — the rules stay in one place and cannot drift.
+const OUTPUT_LANGUAGE = {
+  hu: '\n\n## Output language\n\nThe reader is Hungarian. Write the entire brief in Hungarian, ' +
+      'including every section heading. Keep technical and regulatory terms that have no settled ' +
+      'Hungarian form (MiCA, CASP, stablecoin, x402, non-custodial) in their original form. ' +
+      'Every rule above still applies.'
+};
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
@@ -136,131 +160,39 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  const sessionId = req.body && req.body.sessionId;
-  if (typeof sessionId !== 'string' || !/^cs_[A-Za-z0-9_]{10,200}$/.test(sessionId)) {
-    res.status(402).json({ error: 'Payment required.' });
-    return;
-  }
-
-  // ---------- 1. Verify payment with Stripe itself ----------
-  let stripe, session;
+  let gate;
   try {
-    stripe = makeStripe();
-    session = await stripe.checkout.sessions.retrieve(sessionId);
+    gate = await claimPaidSession({
+      sessionId: req.body && req.body.sessionId,
+      product: PRODUCT,
+      fallbackAnswers: req.body && req.body.answers,
+      fallbackLang: req.body && req.body.lang
+    });
   } catch (err) {
-    console.error('Stripe verify failed:', err.message);
-    res.status(402).json({ error: 'Could not verify payment.' });
+    console.error('brief.js gate error:', err);
+    res.status(500).json({ error: 'Server is not configured.' });
     return;
   }
 
-  if (session.payment_status !== 'paid') {
-    res.status(402).json({ error: 'Payment not completed for this session.' });
-    return;
-  }
-  if (session.amount_total !== BRIEF_PRICE_CENTS || session.currency !== BRIEF_CURRENCY) {
-    console.error('Amount mismatch on', sessionId, session.amount_total, session.currency);
-    res.status(402).json({ error: 'Payment does not match the expected amount.' });
-    return;
-  }
-  // A paid session stays "paid" forever. Without an age bound, a leaked
-  // session id is a permanent free pass.
-  const ageHours = (Date.now() / 1000 - (session.created || 0)) / 3600;
-  if (ageHours > 48) {
-    res.status(410).json({
-      error: 'This payment is too old to generate automatically. Email marton.thuroczy@ledgerworkshu.com and I will send it manually.'
-    });
+  if (!gate.ok) {
+    res.status(gate.status).json({ error: GATE_ERRORS[gate.code] || 'Payment required.' });
     return;
   }
 
-  // ---------- 2. Claim the session atomically (replay protection) ----------
-  // set with nx:true either creates the key or fails — no check-then-act gap
-  // where two concurrent requests both pass the check.
-  const claimKey = 'brief_claim:' + sessionId;
-  let claimed = false;
-  if (kv) {
-    try {
-      const ok = await kv.set(claimKey, 'in_progress', { nx: true, ex: 60 * 60 * 24 * 30 });
-      if (!ok) {
-        res.status(409).json({
-          error: 'This payment has already been used. If you did not receive your brief, email marton.thuroczy@ledgerworkshu.com.'
-        });
-        return;
-      }
-      claimed = true;
-    } catch (err) {
-      console.error('KV claim failed — replay protection degraded:', err);
-    }
-  }
-
-  async function releaseClaim() {
-    if (kv && claimed) {
-      try { await kv.del(claimKey); } catch (e) { /* buyer can email */ }
-    }
-  }
-
-  // ---------- 3. Recover the answers that were paid for ----------
-  let answers = null;
-  if (kv) {
-    try { answers = await kv.get('brief_answers:' + sessionId); } catch (e) { answers = null; }
-  }
-  if (!answers) answers = sanitizeAnswers(req.body && req.body.answers);
-  if (!answers.idea) {
-    await releaseClaim();
-    res.status(400).json({ error: 'Could not recover your answers. Email marton.thuroczy@ledgerworkshu.com and I will generate it manually.' });
-    return;
-  }
-
-  // ---------- 4. Generate ----------
   try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 55000);
-
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      signal: controller.signal,
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        max_tokens: MAX_TOKENS,
-        system: SYSTEM_PROMPT,
-        messages: [{ role: 'user', content: buildUserMessage(answers) }]
-      })
+    const out = await generate({
+      apiKey, model: MODEL, maxTokens: MAX_TOKENS,
+      system: SYSTEM_PROMPT + (OUTPUT_LANGUAGE[gate.lang] || ''),
+      user: buildUserMessage(gate.answers)
     });
-    clearTimeout(timeout);
-
-    if (!response.ok) {
-      console.error('Anthropic API error:', response.status, await response.text());
-      await releaseClaim();
-      res.status(502).json({ error: 'Generation failed — you have not lost your payment, please try again.' });
-      return;
-    }
-
-    const data = await response.json();
-    const brief = (data.content || [])
-      .filter(b => b.type === 'text').map(b => b.text).join('\n').trim();
-
-    if (!brief) {
-      await releaseClaim();
-      res.status(502).json({ error: 'Generation returned nothing — please try again.' });
-      return;
-    }
-
-    if (kv && claimed) {
-      try { await kv.set(claimKey, 'done', { ex: 60 * 60 * 24 * 30 }); } catch (e) {}
-    }
-
-    res.status(200).json({
-      brief: brief,
-      // Tell the buyer rather than silently handing them a cut-off document.
-      truncated: data.stop_reason === 'max_tokens'
-    });
+    await gate.settle();
+    res.status(200).json({ brief: out.text, truncated: out.truncated });
   } catch (err) {
     console.error('brief.js error:', err);
-    await releaseClaim();
-    res.status(500).json({ error: 'Unexpected error — you have not lost your payment, please try again.' });
+    await gate.release();
+    const status = err.code === 'upstream_error' || err.code === 'empty_generation' ? 502 : 500;
+    res.status(status).json({
+      error: 'Generation failed — you have not lost your payment, please try again.'
+    });
   }
 };

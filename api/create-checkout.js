@@ -1,5 +1,8 @@
 // /api/create-checkout.js
-// Creates a Stripe Checkout Session for the automated build brief.
+// Creates a Stripe Checkout Session for any paid generator on the site.
+// Which one is decided by the `product` field in the body; it defaults to
+// 'brief' so the original English page, which sends no such field, is
+// unaffected.
 //
 // The answers are stored SERVER-SIDE against the session id here, rather than
 // being sent up again after payment. Two reasons:
@@ -11,7 +14,7 @@
 // Env vars recommended: Vercel KV (answer storage + replay protection)
 
 const {
-  BRIEF_PRICE_CENTS, BRIEF_CURRENCY, makeStripe, baseUrl, kv, sanitizeAnswers
+  getProduct, makeStripe, baseUrl, kv, sanitizeAnswers, sanitizeLang
 } = require('./_shared');
 
 module.exports = async function handler(req, res) {
@@ -20,8 +23,9 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  let stripe, origin;
+  let stripe, origin, product;
   try {
+    product = getProduct(req.body && req.body.product);
     stripe = makeStripe();
     origin = baseUrl();
   } catch (err) {
@@ -30,9 +34,9 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  const answers = sanitizeAnswers(req.body && req.body.answers);
-  if (!answers.idea) {
-    res.status(400).json({ error: 'Describe what you want to build before paying.' });
+  const answers = sanitizeAnswers(req.body && req.body.answers, product.limits);
+  if (!answers[product.requiredField]) {
+    res.status(400).json({ error: 'Answer the questions before paying.' });
     return;
   }
 
@@ -41,12 +45,9 @@ module.exports = async function handler(req, res) {
       mode: 'payment',
       line_items: [{
         price_data: {
-          currency: BRIEF_CURRENCY,
-          unit_amount: BRIEF_PRICE_CENTS,
-          product_data: {
-            name: 'Ledgerworks — Automated build brief',
-            description: 'AI-generated architecture recommendation, risk flags, and prompt pack.'
-          }
+          currency: product.currency,
+          unit_amount: product.amount,
+          product_data: { name: product.name, description: product.description }
         },
         quantity: 1
       }],
@@ -56,18 +57,20 @@ module.exports = async function handler(req, res) {
       // we don't have on this inline price_data line item — disable it here
       // rather than maintain a persistent Stripe Product just to satisfy it.
       managed_payments: { enabled: false },
-      success_url: origin + '/?session_id={CHECKOUT_SESSION_ID}#brief',
-      cancel_url: origin + '/?checkout=cancelled#brief'
+      success_url: origin + product.successPath,
+      cancel_url: origin + product.cancelPath
     });
 
     if (kv) {
       try {
         // Expires well after the Checkout Session itself (Stripe sessions
         // expire in 24h), so there's no orphaned data sitting around.
-        await kv.set('brief_answers:' + session.id, answers, { ex: 60 * 60 * 48 });
+        await kv.set(product.kvPrefix + 'answers:' + session.id, answers, { ex: 60 * 60 * 48 });
+        const lang = sanitizeLang(req.body && req.body.lang);
+        if (lang) await kv.set(product.kvPrefix + 'lang:' + session.id, lang, { ex: 60 * 60 * 48 });
       } catch (err) {
         console.error('KV answer store failed:', err);
-        // Fall through — brief.js will fall back to client-supplied answers.
+        // Fall through — the generator falls back to client-supplied answers.
       }
     }
 
